@@ -9,8 +9,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("vista/inicio.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setTitle("Inteligencia Artificial - Foraging");
+        primaryStage.setScene(new Scene(root, 1350, 710));
         primaryStage.show();
     }
 
