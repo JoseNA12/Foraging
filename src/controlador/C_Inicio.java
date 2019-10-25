@@ -25,6 +25,7 @@ import modelo.Path_Imagenes;
 
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class C_Inicio {
@@ -81,7 +82,7 @@ public class C_Inicio {
 
     // cuando el usuario pone un objeto en la matriz de botones, se usa esta matriz para
     // .. almacenar el enum y asi trabajar sobre esta
-    private Objeto_IU[] matriz_objetos_resultante;
+    private ArrayList<ArrayList<Objeto_IU>> matriz_objetos_resultante;
 
 
     public void initialize() throws Exception {
@@ -89,7 +90,7 @@ public class C_Inicio {
     }
 
     private void init_componentes() {
-
+        matriz_objetos_resultante = new ArrayList<ArrayList<Objeto_IU>>();
     }
 
     // establecer el tamaño de los botones e imagenes de la matriz que se generar segun el tamaño
@@ -118,6 +119,8 @@ public class C_Inicio {
 
             // crear el grid con botones
             for (int y = 0; y < cant_filas; y++) {
+                ArrayList<Objeto_IU> pLista = new ArrayList<>();
+
                 for (int x = 0; x < cant_columnas; x++) {
                     Button btn = new Button();
                     btn.setMaxSize(width_btn_matriz, height_btn_matriz);
@@ -129,12 +132,14 @@ public class C_Inicio {
                     Celda c = new Celda(y, x, Objeto_IU.VACIO);
                     btn.setUserData(c);
 
+                    pLista.add(Objeto_IU.VACIO);
 
                     // poner en el grid pane el boton
                     id_gridPane.setRowIndex(btn, y);
                     id_gridPane.setColumnIndex(btn, x);
                     id_gridPane.getChildren().add(btn);
                 }
+                matriz_objetos_resultante.add(pLista);
             }
         }
     }
@@ -143,6 +148,9 @@ public class C_Inicio {
         @Override
         public void handle(ActionEvent e) {
             Button btn = ((Button)e.getSource()); // obtener el objeto del boton que se presiona
+            int fila = ((Celda) btn.getUserData()).getFila();
+            int columna = ((Celda) btn.getUserData()).getColumna();
+
             Image image = null; // hace posible poner la imagen segun el objeto que se selecciona
 
             if (obj_matriz_botones != null) {
@@ -150,23 +158,29 @@ public class C_Inicio {
                     case NIDO:
                         image = new Image(getClass().getResourceAsStream(Path_Imagenes.HORMIGA.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
                         ((Celda) btn.getUserData()).setTipo_objeto(Objeto_IU.NIDO);
+
+                        matriz_objetos_resultante.get(fila).set(columna, Objeto_IU.NIDO);
                         break;
                     case ALIMENTO:
                         image = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
                         ((Celda) btn.getUserData()).setTipo_objeto(Objeto_IU.ALIMENTO);
+                        matriz_objetos_resultante.get(fila).set(columna, Objeto_IU.ALIMENTO);
                         break;
                     case OBSTACULO:
                         image = new Image(getClass().getResourceAsStream(Path_Imagenes.OBSTACULO.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
                         ((Celda) btn.getUserData()).setTipo_objeto(Objeto_IU.OBSTACULO);
+                        matriz_objetos_resultante.get(fila).set(columna, Objeto_IU.OBSTACULO);
                         break;
                     case ELIMINAR:
                         ((Celda) btn.getUserData()).setTipo_objeto(Objeto_IU.VACIO);
+                        matriz_objetos_resultante.get(fila).set(columna, Objeto_IU.VACIO);
                         break;
                     default:
                         break;
                 }
                 btn.setGraphic(new ImageView(image));
                 System.out.println(btn.getUserData().toString());
+                System.out.println(matriz_objetos_resultante.get(fila).get(columna));
             }
             e.consume();
         }
