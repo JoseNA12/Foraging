@@ -107,7 +107,7 @@
                               <Button mnemonicParsing="false" onAction="#onButtonClick_Obstaculos" prefHeight="75.0" prefWidth="250.0" text="Obstáculos" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@imagenes/ant.png" />
+                                    <Image url="@imagenes/ant_.png" />
                                  </image>
                               </ImageView>
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
