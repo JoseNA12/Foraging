@@ -18,7 +18,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="725.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.C_Inicio">
    <children>
-      <Button fx:id="id_btn_iniciar_simulacion" layoutX="971.0" layoutY="546.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="357.0" text="Iniciar simulación" />
+      <Button fx:id="id_btn_iniciar_simulacion" layoutX="971.0" layoutY="546.0" mnemonicParsing="false" onAction="#onButtonClick_IniciarSimulacion" prefHeight="25.0" prefWidth="357.0" text="Iniciar simulación" />
       <TabPane layoutX="980.0" layoutY="66.0" prefHeight="480.0" prefWidth="357.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Parámetros">
@@ -70,17 +70,17 @@
                                  </font>
                               </Text>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lapsos de tiempo en la simulación" GridPane.rowIndex="13" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <CheckBox mnemonicParsing="false" text="¿Los agentes pueden morir?" GridPane.rowIndex="3" />
-                              <TextField promptText="Vida (seg.)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <CheckBox mnemonicParsing="false" text="¿Reproducción de agentes?" GridPane.rowIndex="4" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                              <TextField fx:id="id_text_cantidad_agentes_x_nido" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="id_text_cantidad_alimento_recoger" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <CheckBox fx:id="id_check_agentes_morir" mnemonicParsing="false" text="¿Los agentes pueden morir?" GridPane.rowIndex="3" />
+                              <TextField fx:id="id_text_vida_agentes" promptText="Vida (seg.)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <CheckBox fx:id="id_check_agentes_reproduccion" mnemonicParsing="false" text="¿Reproducción de agentes?" GridPane.rowIndex="4" />
+                              <TextField fx:id="id_text_cantidad_alimento_max_x_nido" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextField fx:id="id_text_cantidad_alimento_min_x_nido" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <TextField fx:id="id_text_duración_alimento_en_nido" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <TextField fx:id="id_text_cantidad_alimento_disponible_x_ubicacion" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <TextField fx:id="id_text_tiempo_disponible_alimento_x_ubicacion" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                              <TextField fx:id="id_text_lapsos_tiempo_duracion" GridPane.columnIndex="1" GridPane.rowIndex="13" />
                            </children>
                         </GridPane>
                      </children>

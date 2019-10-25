@@ -8,7 +8,9 @@ import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,14 +40,37 @@ public class C_Inicio {
     @FXML Button id_btn_nidoAgentes;
     @FXML Button id_btn_fuenteAlimento;
     @FXML Button id_btn_obstaculos;
-    @FXML Button id_btn_iniciar_simulacion;
     @FXML Button id_btn_eliminar_obj;
+
+    // ------ Parámetros de la configuración de juego ------
+    // Agentes
+    @FXML TextField id_text_cantidad_agentes_x_nido;
+    @FXML TextField id_text_cantidad_alimento_recoger;
+    @FXML CheckBox id_check_agentes_morir;
+    @FXML TextField id_text_vida_agentes;
+    @FXML CheckBox id_check_agentes_reproduccion;
+
+    // Nidos
+    @FXML TextField id_text_cantidad_alimento_max_x_nido;
+    @FXML TextField id_text_cantidad_alimento_min_x_nido;
+    @FXML TextField id_text_duración_alimento_en_nido;
+
+    // Fuentes alimento
+    @FXML TextField id_text_cantidad_alimento_disponible_x_ubicacion;
+    @FXML TextField id_text_tiempo_disponible_alimento_x_ubicacion;
+
+    @FXML TextField id_text_lapsos_tiempo_duracion;
+    @FXML Button id_btn_iniciar_simulacion;
+    // -----------------------------------------------------
 
     // limites de la matriz de juego
     private int max_filas = 38;
     private int max_columnas = 52;
     private int min_filas = 10;
     private int min_columnas = 10;
+
+    private int cant_filas = 0;
+    private int cant_columnas = 0;
 
     // indica que objeto poner en la matriz seleccionable
     private Objeto_IU obj_matriz_botones = null;
@@ -80,8 +105,8 @@ public class C_Inicio {
         if ((id_cant_filas.getText().matches("[0-9]+") && id_cant_filas.getText().trim().length() > 0) &&
                 (id_cant_columnas.getText().matches("[0-9]+") && id_cant_columnas.getText().trim().length() > 0)) {
 
-            int cant_filas = Integer.parseInt(id_cant_filas.getText());
-            int cant_columnas = Integer.parseInt(id_cant_columnas.getText());
+            cant_filas = Integer.parseInt(id_cant_filas.getText());
+            cant_columnas = Integer.parseInt(id_cant_columnas.getText());
 
             // validaciones de la cantidad de filas y columnas a generar
             if (cant_filas < min_filas) { cant_filas = min_filas; }
@@ -104,6 +129,7 @@ public class C_Inicio {
                     Celda c = new Celda(y, x, Objeto_IU.VACIO);
                     btn.setUserData(c);
 
+
                     // poner en el grid pane el boton
                     id_gridPane.setRowIndex(btn, y);
                     id_gridPane.setColumnIndex(btn, x);
@@ -111,7 +137,6 @@ public class C_Inicio {
                 }
             }
         }
-
     }
 
     private EventHandler<ActionEvent> btn_matriz_handler = new EventHandler<ActionEvent>() {
@@ -169,5 +194,10 @@ public class C_Inicio {
     void onButtonClick_eliminar(ActionEvent event) {
         obj_matriz_botones = Objeto_IU.ELIMINAR;
         id_text_obj_agregar.setText(Objeto_IU.ELIMINAR.getContenido());
+    }
+
+    @FXML
+    void onButtonClick_IniciarSimulacion(ActionEvent event) {
+
     }
 }
