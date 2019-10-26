@@ -19,6 +19,7 @@ public class Agente {
         this.vida = vida;
     }
 
+
     public String getID() {
         return ID;
     }

@@ -17,6 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.converter.IntegerStringConverter;
 import modelo.FuenteAlimento;
+import modelo.Matriz_grafo;
 import modelo.Nido;
 import modelo.Obstaculo;
 import modelo.otros.Celda;
@@ -82,7 +83,7 @@ public class C_Inicio {
     // Antes de presionar el boton "Iniciar simulación" esta matriz nada mas tiene objetos Celda con
     // .. valores: fila, columna y Objeto_IU, y el otro objeto que puede ser: Nido, FuenteAlimento u Obstaculo
     // .. se setea una vez presionado el boton "Iniciar simulación".
-    private ArrayList<ArrayList<Celda>> matriz_objetos;
+    private Matriz_grafo matriz;
 
 
     public void initialize() throws Exception {
@@ -139,7 +140,7 @@ public class C_Inicio {
     @FXML
     void onButtonClick_GenerarMatrizBotones(ActionEvent event) {
         id_gridPane.getChildren().clear();
-        matriz_objetos = new ArrayList<ArrayList<Celda>>();
+        matriz = new Matriz_grafo();
 
         if ((id_cant_filas.getText().matches("[0-9]+") && id_cant_filas.getText().trim().length() > 0) &&
                 (id_cant_columnas.getText().matches("[0-9]+") && id_cant_columnas.getText().trim().length() > 0)) {
@@ -177,7 +178,7 @@ public class C_Inicio {
                     id_gridPane.setColumnIndex(btn, x);
                     id_gridPane.getChildren().add(btn);
                 }
-                matriz_objetos.add(pLista);
+                matriz.add(pLista);
             }
         }
     }
@@ -188,44 +189,29 @@ public class C_Inicio {
             Button btn = ((Button)e.getSource()); // obtener el objeto del boton que se presiona
             int fila = ((Celda) btn.getUserData()).getFila();
             int columna = ((Celda) btn.getUserData()).getColumna();
-            Celda c = null;
             Image image = null; // hace posible poner la imagen segun el objeto que se selecciona
 
             if (obj_matriz_botones != null) {
                 switch (obj_matriz_botones) {
                     case NIDO:
                         image = new Image(getClass().getResourceAsStream(Path_Imagenes.HORMIGA.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
-                        ((Celda) btn.getUserData()).setTipo_objeto(Objeto_IU.NIDO);
-                        c = matriz_objetos.get(fila).get(columna);
-                        c.setTipo_objeto(Objeto_IU.NIDO);
-                        matriz_objetos.get(fila).set(columna, c);
+                        matriz.get(fila, columna).setTipo_objeto(Objeto_IU.NIDO);
                         break;
                     case ALIMENTO:
                         image = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
-                        ((Celda) btn.getUserData()).setTipo_objeto(Objeto_IU.ALIMENTO);
-                        c = matriz_objetos.get(fila).get(columna);
-                        c.setTipo_objeto(Objeto_IU.ALIMENTO);
-                        matriz_objetos.get(fila).set(columna, c);
+                        matriz.get(fila, columna).setTipo_objeto(Objeto_IU.ALIMENTO);
                         break;
                     case OBSTACULO:
                         image = new Image(getClass().getResourceAsStream(Path_Imagenes.OBSTACULO.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
-                        ((Celda) btn.getUserData()).setTipo_objeto(Objeto_IU.OBSTACULO);
-                        c = matriz_objetos.get(fila).get(columna);
-                        c.setTipo_objeto(Objeto_IU.OBSTACULO);
-                        matriz_objetos.get(fila).set(columna, c);
+                        matriz.get(fila, columna).setTipo_objeto(Objeto_IU.OBSTACULO);
                         break;
                     case ELIMINAR:
-                        ((Celda) btn.getUserData()).setTipo_objeto(Objeto_IU.VACIO);
-                        c = matriz_objetos.get(fila).get(columna);
-                        c.setTipo_objeto(Objeto_IU.VACIO);
-                        matriz_objetos.get(fila).set(columna, c);
+                        matriz.get(fila, columna).setTipo_objeto(Objeto_IU.VACIO);
                         break;
                     default:
                         break;
                 }
                 btn.setGraphic(new ImageView(image));
-                //System.out.println(btn.getUserData().toString());
-                //System.out.println(matriz_objetos.get(fila).get(columna));
             }
             e.consume();
         }
@@ -263,20 +249,17 @@ public class C_Inicio {
         Task task = new Task<Object>() {
             @Override
             protected Object call() throws Exception {
-                Image image = null; // para probar las posiciones nada mas
-                id_progress_bar.setVisible(true);
+                Image image = null;
 
                 for (int y = 0; y < cant_filas; y++) {
-                    id_progress_bar.setProgress(1 - (1 / y));
-
                     for (int x = 0; x < cant_columnas; x++) {
-                        Objeto_IU obj = matriz_objetos.get(y).get(x).getTipo_objeto();
+                        Objeto_IU obj = matriz.get(y, x).getTipo_objeto();
 
                         switch (obj) {
                             case OBSTACULO:
                                 image = new Image(getClass().getResourceAsStream(Path_Imagenes.OBSTACULO.getContenido()));
 
-                                matriz_objetos.get(y).get(x).setObjeto_en_juego(new Obstaculo());
+                                matriz.get(y, x).setObjeto_en_juego(new Obstaculo());
                                 break;
                             case NIDO:
                                 image = new Image(getClass().getResourceAsStream(Path_Imagenes.HORMIGA.getContenido()));
@@ -292,12 +275,12 @@ public class C_Inicio {
                                         Integer.parseInt(id_text_cantidad_alimento_recoger.getText()),
                                         Integer.parseInt(id_text_vida_agentes.getText())
                                 );
-                                matriz_objetos.get(y).get(x).setObjeto_en_juego(nido);
+                                matriz.get(y, x).setObjeto_en_juego(nido);
                                 break;
                             case ALIMENTO:
                                 image = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO.getContenido()));
 
-                                matriz_objetos.get(y).get(x).setObjeto_en_juego(
+                                matriz.get(y, x).setObjeto_en_juego(
                                         new FuenteAlimento(
                                                 Integer.parseInt(id_text_cantidad_alimento_disponible_x_ubicacion.getText()),
                                                 Integer.parseInt(id_text_tiempo_disponible_alimento_x_ubicacion.getText()),
@@ -311,7 +294,6 @@ public class C_Inicio {
                         gc.drawImage(image, x * width_btn_matriz, y * height_btn_matriz, width_btn_matriz, height_btn_matriz);
                     }
                 }
-                id_progress_bar.setVisible(false);
 
                 return null;
             }
