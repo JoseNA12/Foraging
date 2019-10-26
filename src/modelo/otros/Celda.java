@@ -8,11 +8,6 @@ public class Celda {
     private Object objeto_en_juego = null; // puede ser Nido, FuenteAlimento u Obstaculo (modelos)
 
 
-    public Celda(int fila, int columna) {
-        this.fila = fila;
-        this.columna = columna;
-    }
-
     public Celda(int fila, int columna, Objeto_IU tipo_objeto, Object objeto_en_juego) {
         this.fila = fila;
         this.columna = columna;

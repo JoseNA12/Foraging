@@ -20,7 +20,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="725.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.C_Inicio">
    <children>
-      <Button fx:id="id_btn_iniciar_simulacion" layoutX="980.0" layoutY="546.0" mnemonicParsing="false" onAction="#onButtonClick_IniciarSimulacion" prefHeight="25.0" prefWidth="357.0" text="Iniciar simulación" />
+      <Button fx:id="id_btn_iniciar_simulacion" disable="true" layoutX="980.0" layoutY="546.0" mnemonicParsing="false" onAction="#onButtonClick_IniciarSimulacion" prefHeight="25.0" prefWidth="178.5" text="Iniciar simulación" />
       <TabPane layoutX="980.0" layoutY="66.0" prefHeight="480.0" prefWidth="357.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Parámetros">
@@ -83,9 +83,9 @@
                               <TextField fx:id="id_text_duración_alimento_en_nido" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                               <TextField fx:id="id_text_cantidad_alimento_disponible_x_ubicacion" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                               <TextField fx:id="id_text_tiempo_disponible_alimento_x_ubicacion" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                              <TextField fx:id="id_text_tiempo_en_regenerar_alimento" GridPane.columnIndex="1" GridPane.rowIndex="12" />
                               <TextField fx:id="id_text_lapsos_tiempo_duracion" GridPane.columnIndex="1" GridPane.rowIndex="14" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tiempo en regenerar (seg.)" GridPane.rowIndex="12" />
-                              <TextField fx:id="id_text_tiempo_en_regenerar_alimento" GridPane.columnIndex="1" GridPane.rowIndex="12" />
                            </children>
                         </GridPane>
                      </children>
@@ -107,17 +107,17 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Button mnemonicParsing="false" onAction="#onButtonClick_NidoAgentes" prefHeight="75.0" prefWidth="250.0" text="Nido de agentes" GridPane.columnIndex="1" />
-                              <Button mnemonicParsing="false" onAction="#onButtonClick_FuenteAlimento" prefHeight="75.0" prefWidth="250.0" text="Fuente de alimento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button mnemonicParsing="false" onAction="#onButtonClick_Obstaculos" prefHeight="75.0" prefWidth="250.0" text="Obstáculos" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Button fx:id="id_btn_nido_agentes" disable="true" mnemonicParsing="false" onAction="#onButtonClick_NidoAgentes" prefHeight="75.0" prefWidth="250.0" text="Nido de agentes" GridPane.columnIndex="1" />
+                              <Button fx:id="id_btn_fuente_alimento" disable="true" mnemonicParsing="false" onAction="#onButtonClick_FuenteAlimento" prefHeight="75.0" prefWidth="250.0" text="Fuente de alimento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button fx:id="id_btn_obstaculo" disable="true" mnemonicParsing="false" onAction="#onButtonClick_Obstaculos" prefHeight="75.0" prefWidth="250.0" text="Obstáculos" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@imagenes/ant_.png" />
+                                    <Image url="@imagenes/home.png" />
                                  </image>
                               </ImageView>
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
                                  <image>
-                                    <Image url="@imagenes/doughnut.png" />
+                                    <Image url="@imagenes/donut.png" />
                                  </image>
                               </ImageView>
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
@@ -139,7 +139,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Button mnemonicParsing="false" onAction="#onButtonClick_GenerarMatrizBotones" prefHeight="40.0" prefWidth="80.0" text="Generar" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                              <Button fx:id="id_btn_generar_matriz_botones" mnemonicParsing="false" onAction="#onButtonClick_GenerarMatrizBotones" prefHeight="40.0" prefWidth="80.0" text="Generar" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="x" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cant. filas" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cant. columnas" GridPane.columnIndex="2" />
@@ -159,7 +159,7 @@
                               <Image url="@imagenes/eraser.png" />
                            </image>
                         </ImageView>
-                        <Button layoutX="279.0" layoutY="106.0" maxHeight="30.0" maxWidth="30.0" mnemonicParsing="false" onAction="#onButtonClick_eliminar" opacity="0.2" prefHeight="30.0" prefWidth="30.0" />
+                        <Button fx:id="id_btn_borrar" disable="true" layoutX="279.0" layoutY="106.0" maxHeight="30.0" maxWidth="30.0" mnemonicParsing="false" onAction="#onButtonClick_eliminar" opacity="0.2" prefHeight="30.0" prefWidth="30.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -180,5 +180,6 @@
          </children>
       </Pane>
       <ProgressBar fx:id="id_progress_bar" layoutX="980.0" layoutY="571.0" prefHeight="18.0" prefWidth="357.0" progress="0.0" visible="false" />
+      <Button fx:id="id_btn_detener_simulacion" disable="true" layoutX="1159.0" layoutY="546.0" mnemonicParsing="false" onAction="#onButtonClick_DetenerSimulacion" prefWidth="178.5" text="Detener" />
    </children>
 </Pane>

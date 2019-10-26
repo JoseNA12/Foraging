@@ -16,10 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.converter.IntegerStringConverter;
-import modelo.FuenteAlimento;
-import modelo.Matriz_grafo;
-import modelo.Nido;
-import modelo.Obstaculo;
+import modelo.*;
 import modelo.otros.Celda;
 import modelo.otros.Objeto_IU;
 import modelo.otros.Path_Imagenes;
@@ -33,10 +30,14 @@ public class C_Inicio {
     @FXML GridPane id_gridPane;
     @FXML Pane id_pane_matriz;
 
+    // Generar matriz seleccionable de botones
     @FXML TextField id_cant_filas;
     @FXML TextField id_cant_columnas;
 
+    @FXML Button id_btn_generar_matriz_botones;
+
     @FXML Text id_text_obj_agregar;
+    // -----------------------------------------------------
 
     // ------ Parámetros de la configuración de juego ------
     // Agentes
@@ -57,7 +58,14 @@ public class C_Inicio {
     @FXML TextField id_text_tiempo_en_regenerar_alimento;
 
     @FXML TextField id_text_lapsos_tiempo_duracion;
+    // -----------------------------------------------------
+    @FXML Button id_btn_nido_agentes;
+    @FXML Button id_btn_fuente_alimento;
+    @FXML Button id_btn_obstaculo;
+    @FXML Button id_btn_borrar;
+    // -----------------------------------------------------
     @FXML Button id_btn_iniciar_simulacion;
+    @FXML Button id_btn_detener_simulacion;
 
     @FXML ProgressBar id_progress_bar;
     // -----------------------------------------------------
@@ -74,16 +82,21 @@ public class C_Inicio {
     // indica que objeto poner en la matriz seleccionable
     private Objeto_IU obj_matriz_botones = null;
 
-    // tamaños de los botones/imagenes en la matriz seleccionable
-    private int height_btn_matriz = 0;
-    private int width_btn_matriz = 0;
+    // tamaños de los botones/imagenes en la matriz seleccionable de botones
+    public static int height_btn_matriz = 0;
+    public static int width_btn_matriz = 0;
 
     // cuando el usuario pone un objeto en la matriz de botones, se usa esta matriz para
     // .. almacenar un objeto Celda y asi trabajar sobre esta.
     // Antes de presionar el boton "Iniciar simulación" esta matriz nada mas tiene objetos Celda con
     // .. valores: fila, columna y Objeto_IU, y el otro objeto que puede ser: Nido, FuenteAlimento u Obstaculo
     // .. se setea una vez presionado el boton "Iniciar simulación".
-    private Matriz_grafo matriz;
+    private static Matriz_grafo matriz;
+
+    // variable por la cual se imprimen cosas/objectos en la IU
+    private CanvasJuego mi_canvas;
+
+    public static boolean juego_activo = false;
 
 
     public void initialize() throws Exception {
@@ -120,6 +133,8 @@ public class C_Inicio {
                 id_text_vida_agentes.setDisable(!newValue);
             }
         });
+
+        mi_canvas = new CanvasJuego(id_canvas_juego);
     }
 
     // hacer que los input's reciban unicamente valores numericos
@@ -170,6 +185,7 @@ public class C_Inicio {
                     // almacenar en el boton su respectiva coordenada
                     Celda c = new Celda(y, x, Objeto_IU.VACIO);
                     btn.setUserData(c);
+                    btn.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(Path_Imagenes.BLOQUE.getContenido()), width_btn_matriz, height_btn_matriz, false, false)));
 
                     pLista.add(c);
 
@@ -180,7 +196,27 @@ public class C_Inicio {
                 }
                 matriz.add(pLista);
             }
+            estadoBotones_generar_matriz_botones(false);
         }
+    }
+
+    private void estadoBotones_generar_matriz_botones(boolean pEstado) {
+        id_btn_borrar.setDisable(pEstado);
+        id_btn_nido_agentes.setDisable(pEstado);
+        id_btn_fuente_alimento.setDisable(pEstado);
+        id_btn_obstaculo.setDisable(pEstado);
+        id_btn_iniciar_simulacion.setDisable(pEstado);
+    }
+
+    private void estadoBotones_iniciar_simulacion(boolean pEstado) {
+        id_btn_generar_matriz_botones.setDisable(pEstado);
+        id_btn_detener_simulacion.setDisable(!pEstado);
+        estadoBotones_generar_matriz_botones(pEstado);
+    }
+
+    private void estadoBotones_detener_simulacion(boolean pEstado) {
+        id_btn_generar_matriz_botones.setDisable(!pEstado);
+        id_btn_detener_simulacion.setDisable(pEstado);
     }
 
     private EventHandler<ActionEvent> btn_matriz_handler = new EventHandler<ActionEvent>() {
@@ -194,7 +230,7 @@ public class C_Inicio {
             if (obj_matriz_botones != null) {
                 switch (obj_matriz_botones) {
                     case NIDO:
-                        image = new Image(getClass().getResourceAsStream(Path_Imagenes.HORMIGA.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
+                        image = new Image(getClass().getResourceAsStream(Path_Imagenes.NIDO.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
                         matriz.get(fila, columna).setTipo_objeto(Objeto_IU.NIDO);
                         break;
                     case ALIMENTO:
@@ -206,6 +242,7 @@ public class C_Inicio {
                         matriz.get(fila, columna).setTipo_objeto(Objeto_IU.OBSTACULO);
                         break;
                     case ELIMINAR:
+                        image = new Image(getClass().getResourceAsStream(Path_Imagenes.BLOQUE.getContenido()), width_btn_matriz, height_btn_matriz, false, false);
                         matriz.get(fila, columna).setTipo_objeto(Objeto_IU.VACIO);
                         break;
                     default:
@@ -244,12 +281,18 @@ public class C_Inicio {
     @FXML
     void onButtonClick_IniciarSimulacion(ActionEvent event) throws InterruptedException {
         id_gridPane.getChildren().clear();
-        GraphicsContext gc = id_canvas_juego.getGraphicsContext2D();
+        juego_activo = true;
+        estadoBotones_iniciar_simulacion(true);
+        //GraphicsContext gc = id_canvas_juego.getGraphicsContext2D();
 
         Task task = new Task<Object>() {
             @Override
             protected Object call() throws Exception {
                 Image image = null;
+                Image img_obstaculo = new Image(getClass().getResourceAsStream(Path_Imagenes.OBSTACULO.getContenido()));
+                Image img_nido = new Image(getClass().getResourceAsStream(Path_Imagenes.NIDO.getContenido()));
+                Image img_fuente_alimento = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO.getContenido()));
+                Image img_fuente_alimento_no_disp = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO_NO_DISP.getContenido()));
 
                 for (int y = 0; y < cant_filas; y++) {
                     for (int x = 0; x < cant_columnas; x++) {
@@ -257,12 +300,12 @@ public class C_Inicio {
 
                         switch (obj) {
                             case OBSTACULO:
-                                image = new Image(getClass().getResourceAsStream(Path_Imagenes.OBSTACULO.getContenido()));
-
+                                image = img_obstaculo;
                                 matriz.get(y, x).setObjeto_en_juego(new Obstaculo());
                                 break;
+
                             case NIDO:
-                                image = new Image(getClass().getResourceAsStream(Path_Imagenes.HORMIGA.getContenido()));
+                                image = img_nido;
 
                                 Nido nido = new Nido(x + y,
                                         Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
@@ -277,21 +320,25 @@ public class C_Inicio {
                                 );
                                 matriz.get(y, x).setObjeto_en_juego(nido);
                                 break;
-                            case ALIMENTO:
-                                image = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO.getContenido()));
 
-                                matriz.get(y, x).setObjeto_en_juego(
-                                        new FuenteAlimento(
-                                                Integer.parseInt(id_text_cantidad_alimento_disponible_x_ubicacion.getText()),
-                                                Integer.parseInt(id_text_tiempo_disponible_alimento_x_ubicacion.getText()),
-                                                Integer.parseInt(id_text_tiempo_en_regenerar_alimento.getText())
-                                        ));
+                            case ALIMENTO:
+                                image = img_fuente_alimento;
+
+                                FuenteAlimento fa = new FuenteAlimento(
+                                        Integer.parseInt(id_text_cantidad_alimento_disponible_x_ubicacion.getText()),
+                                        Integer.parseInt(id_text_tiempo_disponible_alimento_x_ubicacion.getText()),
+                                        Integer.parseInt(id_text_tiempo_en_regenerar_alimento.getText())
+                                );
+                                fa.init(mi_canvas, img_fuente_alimento, img_fuente_alimento_no_disp, x, y);
+                                matriz.get(y, x).setObjeto_en_juego(fa);
+
                                 break;
+
                             default:
                                 image = null;
                                 break;
                         }
-                        gc.drawImage(image, x * width_btn_matriz, y * height_btn_matriz, width_btn_matriz, height_btn_matriz);
+                        mi_canvas.dibujar_canvas(image, x, y); // dibujar los objetos que el usuario seleccionó
                     }
                 }
 
@@ -300,6 +347,12 @@ public class C_Inicio {
         };
 
         new Thread(task).start();
+    }
+
+    @FXML
+    void onButtonClick_DetenerSimulacion(ActionEvent event) {
+        juego_activo = false;
+        estadoBotones_detener_simulacion(true);
     }
 
     private void ejemplo_hilo() {
