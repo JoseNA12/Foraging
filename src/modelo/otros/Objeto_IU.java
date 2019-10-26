@@ -1,4 +1,4 @@
-package modelo;
+package modelo.otros;
 
 public enum Objeto_IU {
     NIDO("Nido de agentes"),
