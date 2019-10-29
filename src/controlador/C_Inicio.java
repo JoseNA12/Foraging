@@ -283,80 +283,53 @@ public class C_Inicio {
         estadoBotones_iniciar_simulacion(true);
         //GraphicsContext gc = id_canvas_juego.getGraphicsContext2D();
 
-        Task task = new Task<Object>() {
-            @Override
-            protected Object call() throws Exception {
-                Image image = null;
+        Image image = null;
 
-                for (int y = 0; y < cant_filas; y++) {
-                    for (int x = 0; x < cant_columnas; x++) {
-                        Celda pCelda = matriz.get(y, x);
+        for (int y = 0; y < cant_filas; y++) {
+            for (int x = 0; x < cant_columnas; x++) {
+                Celda pCelda = matriz.get(y, x);
 
-                        switch (pCelda.getTipo_objeto()) {
-                            case OBSTACULO:
-                                image = mi_canvas.getImg_obstaculo();
-                                matriz.set(y, x, new Obstaculo(pCelda));
-                                break;
+                switch (pCelda.getTipo_objeto()) {
+                    case OBSTACULO:
+                        image = mi_canvas.getImg_obstaculo();
+                        matriz.set(y, x, new Obstaculo(pCelda));
+                        break;
 
-                            case NIDO:
-                                image = mi_canvas.getImg_nido();
+                    case NIDO:
+                        image = mi_canvas.getImg_nido();
 
-                                Nido nido = new Nido(pCelda, x + y,
-                                        Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
-                                        Integer.parseInt(id_text_cantidad_alimento_min_x_nido.getText()),
-                                        Integer.parseInt(id_text_duración_alimento_en_nido.getText()),
-                                        Integer.parseInt(id_text_cantidad_agentes_x_nido.getText())
-                                );
-                                nido.crearEnjambre(
-                                        id_check_agentes_morir.isSelected(),
-                                        Integer.parseInt(id_text_cantidad_alimento_recoger.getText()),
-                                        Integer.parseInt(id_text_vida_agentes.getText())
-                                );
-                                matriz.set(y, x, nido);
-                                break;
+                        Nido nido = new Nido(pCelda, x + y,
+                                Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
+                                Integer.parseInt(id_text_cantidad_alimento_min_x_nido.getText()),
+                                Integer.parseInt(id_text_duración_alimento_en_nido.getText()),
+                                Integer.parseInt(id_text_cantidad_agentes_x_nido.getText())
+                        );
+                        nido.crearEnjambre(
+                                id_check_agentes_morir.isSelected(),
+                                Integer.parseInt(id_text_cantidad_alimento_recoger.getText()),
+                                Integer.parseInt(id_text_vida_agentes.getText())
+                        );
+                        matriz.set(y, x, nido);
+                        break;
 
-                            case ALIMENTO:
-                                image = mi_canvas.getImg_fuente_alimento();
+                    case ALIMENTO:
+                        image = mi_canvas.getImg_fuente_alimento();
 
-                                FuenteAlimento fa = new FuenteAlimento(pCelda,
-                                        Integer.parseInt(id_text_cantidad_alimento_disponible_x_ubicacion.getText()),
-                                        Integer.parseInt(id_text_tiempo_en_regenerar_alimento.getText())
-                                );
-                                matriz.set(y, x, fa);
-                                break;
+                        FuenteAlimento fa = new FuenteAlimento(pCelda,
+                                Integer.parseInt(id_text_cantidad_alimento_disponible_x_ubicacion.getText()),
+                                Integer.parseInt(id_text_tiempo_en_regenerar_alimento.getText())
+                        );
+                        matriz.set(y, x, fa);
+                        break;
 
-                            default:
-                                // por default las casillas son VACIAS
-                                image = null;
-                                break;
-                        }
-                        mi_canvas.dibujar_canvas(image, x, y); // dibujar los objetos que el usuario seleccionó
-                    }
+                    default:
+                        // por default las casillas son VACIAS
+                        image = null;
+                        break;
                 }
-
-                return null;
+                mi_canvas.dibujar_canvas(image, x, y); // dibujar los objetos que el usuario seleccionó
             }
-        };
-
-        new Thread(task).start();
-
-        Task task_prueba = new Task<Object>() {
-            @Override
-            protected Object call() throws Exception {
-
-                while (true) {
-                    System.out.println("PASO 1");
-                    ((FuenteAlimento) matriz.get(0, 0)).consumirAlimento(2);
-                    System.out.println("PASO 3: ");
-
-                    Thread.sleep(1000);
-                }
-
-                //return null;
-            }
-        };
-
-        new Thread(task_prueba).start();
+        }
     }
 
     @FXML

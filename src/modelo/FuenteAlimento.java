@@ -72,8 +72,9 @@ public class FuenteAlimento extends Celda {
     }
 
     public synchronized int consumirAlimento(int pCantidadConsumir) {
+        final int[] valorRetorno = {0};
+
         Task task = new Task<Object>() {
-            int valorRetorno = -1;
 
             @Override
             protected Object call() throws Exception {
@@ -81,35 +82,52 @@ public class FuenteAlimento extends Celda {
                 if (!regenerando) {
                     if (cantidadDisponible > 0) {
                         if (cantidadDisponible < pCantidadConsumir) { // en caso de que lo que se va a consumir satisface una parte
-                            valorRetorno = cantidadDisponible;
+                            valorRetorno[0] = cantidadDisponible;
                             cantidadDisponible = 0;
                         }
                         else {
-                            valorRetorno = pCantidadConsumir;
+                            valorRetorno[0] = pCantidadConsumir;
                             cantidadDisponible -= pCantidadConsumir;
                         }
-
-                        System.out.println("PASO 2: " + cantidadDisponible);
+                        // Si la cantidad de alimentos es < 0, realizar la producción en otro hilo-
+                        // Generando el alimento en otro hilo asegura que el agente no se quede esperando su disponibilidad
+                        //System.out.println("Cantidad Disponible: " + cantidadDisponible);
 
                         if (cantidadDisponible <= 0) {
-                            System.out.println("PASO regenerar");
-                            regenerando = true;
-                            mi_canvas.dibujar_canvas(mi_canvas.getImg_fuente_alimento_no_disp(), getFila(), getColumna());
-                            Thread.sleep(tiempo_regenerar);
-                            mi_canvas.dibujar_canvas(mi_canvas.getImg_fuente_alimento(), getFila(), getColumna());
-                            regenerando = false;
-                            cantidadDisponible = cantidad;
+                            generarAlimento();
                         }
-
                     }
                 }
-                return valorRetorno;
+                return null;
             }
         };
 
+        Thread o = new Thread(task);
+        o.start();
+        try {
+            o.join(); // espero a que la tarea termine su ejecución
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return valorRetorno[0];
+    }
+
+    private void generarAlimento() {
+        Task task = new Task<Object>() {
+            @Override
+            protected Object call() throws Exception {
+                System.out.println("REGENERANDO...");
+                regenerando = true;
+                mi_canvas.dibujar_canvas(mi_canvas.getImg_fuente_alimento_no_disp(), getFila(), getColumna());
+                Thread.sleep(tiempo_regenerar);
+                System.out.println("LISTO, ALIMENTOS DISPONIBLES...");
+                mi_canvas.dibujar_canvas(mi_canvas.getImg_fuente_alimento(), getFila(), getColumna());
+                regenerando = false;
+                cantidadDisponible = cantidad;
+                return null;
+            }
+        };
         new Thread(task).start();
-        //return (boolean) task.getValue();
-        return 1997;
     }
 
     public int getCantidad() {

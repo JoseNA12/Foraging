@@ -1,0 +1,19 @@
+// COMER ALIMENTO
+
+Task task_prueba = new Task<Object>() {
+        @Override
+        protected Object call() throws Exception {
+
+            while (true) {
+                System.out.println("Voy a comer...");
+                int jaja = ((FuenteAlimento) matriz.get(0, 0)).consumirAlimento(2);
+                System.out.println("Retorno Thread: " + jaja);
+
+                Thread.sleep(1000);
+            }
+            //return null;
+        }
+    };
+
+    new Thread(task_prueba).start();
+}
