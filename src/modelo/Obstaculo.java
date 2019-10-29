@@ -1,7 +1,10 @@
 package modelo;
 
-public class Obstaculo {
+import modelo.otros.Celda;
 
-    public Obstaculo() {
+public class Obstaculo extends Celda {
+
+    public Obstaculo(Celda pCelda) {
+        super(pCelda.getFila(), pCelda.getColumna(), pCelda.getTipo_objeto());
     }
 }

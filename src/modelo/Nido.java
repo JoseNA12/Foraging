@@ -1,8 +1,11 @@
 package modelo;
 
+import modelo.otros.Celda;
+
 import java.util.ArrayList;
 
-public class Nido {
+public class Nido extends Celda {
+
     private String ID;
     private int capacidad_maxima_alimento;
     private int capacidad_minima_alimento;
@@ -12,7 +15,9 @@ public class Nido {
     private int cantidad_agentes;
 
 
-    public Nido(int ID, int capacidad_maxima_alimento, int capacidad_minima_alimento, int duracion_alimento, int cantidad_agentes) {
+    public Nido(Celda pCelda, int ID, int capacidad_maxima_alimento, int capacidad_minima_alimento, int duracion_alimento, int cantidad_agentes) {
+        super(pCelda.getFila(), pCelda.getColumna(), pCelda.getTipo_objeto());
+
         this.ID = ID + "Nido";
         this.capacidad_maxima_alimento = capacidad_maxima_alimento;
         this.capacidad_minima_alimento = capacidad_minima_alimento;

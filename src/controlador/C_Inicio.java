@@ -54,7 +54,7 @@ public class C_Inicio {
 
     // Fuentes alimento
     @FXML TextField id_text_cantidad_alimento_disponible_x_ubicacion;
-    @FXML TextField id_text_tiempo_disponible_alimento_x_ubicacion;
+    //@FXML TextField id_text_tiempo_disponible_alimento_x_ubicacion;
     @FXML TextField id_text_tiempo_en_regenerar_alimento;
 
     @FXML TextField id_text_lapsos_tiempo_duracion;
@@ -94,7 +94,7 @@ public class C_Inicio {
     private static Matriz_grafo matriz;
 
     // variable por la cual se imprimen cosas/objectos en la IU
-    private CanvasJuego mi_canvas;
+    public static CanvasJuego mi_canvas;
 
     public static boolean juego_activo = false;
 
@@ -120,8 +120,6 @@ public class C_Inicio {
                 15, integerFilter));
         id_text_cantidad_alimento_disponible_x_ubicacion.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 20, integerFilter));
-        id_text_tiempo_disponible_alimento_x_ubicacion.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                15, integerFilter));
         id_text_tiempo_en_regenerar_alimento.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 30, integerFilter));
         id_text_lapsos_tiempo_duracion.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
@@ -289,25 +287,21 @@ public class C_Inicio {
             @Override
             protected Object call() throws Exception {
                 Image image = null;
-                Image img_obstaculo = new Image(getClass().getResourceAsStream(Path_Imagenes.OBSTACULO.getContenido()));
-                Image img_nido = new Image(getClass().getResourceAsStream(Path_Imagenes.NIDO.getContenido()));
-                Image img_fuente_alimento = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO.getContenido()));
-                Image img_fuente_alimento_no_disp = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO_NO_DISP.getContenido()));
 
                 for (int y = 0; y < cant_filas; y++) {
                     for (int x = 0; x < cant_columnas; x++) {
-                        Objeto_IU obj = matriz.get(y, x).getTipo_objeto();
+                        Celda pCelda = matriz.get(y, x);
 
-                        switch (obj) {
+                        switch (pCelda.getTipo_objeto()) {
                             case OBSTACULO:
-                                image = img_obstaculo;
-                                matriz.get(y, x).setObjeto_en_juego(new Obstaculo());
+                                image = mi_canvas.getImg_obstaculo();
+                                matriz.set(y, x, new Obstaculo(pCelda));
                                 break;
 
                             case NIDO:
-                                image = img_nido;
+                                image = mi_canvas.getImg_nido();
 
-                                Nido nido = new Nido(x + y,
+                                Nido nido = new Nido(pCelda, x + y,
                                         Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
                                         Integer.parseInt(id_text_cantidad_alimento_min_x_nido.getText()),
                                         Integer.parseInt(id_text_duración_alimento_en_nido.getText()),
@@ -318,23 +312,21 @@ public class C_Inicio {
                                         Integer.parseInt(id_text_cantidad_alimento_recoger.getText()),
                                         Integer.parseInt(id_text_vida_agentes.getText())
                                 );
-                                matriz.get(y, x).setObjeto_en_juego(nido);
+                                matriz.set(y, x, nido);
                                 break;
 
                             case ALIMENTO:
-                                image = img_fuente_alimento;
+                                image = mi_canvas.getImg_fuente_alimento();
 
-                                FuenteAlimento fa = new FuenteAlimento(
+                                FuenteAlimento fa = new FuenteAlimento(pCelda,
                                         Integer.parseInt(id_text_cantidad_alimento_disponible_x_ubicacion.getText()),
-                                        Integer.parseInt(id_text_tiempo_disponible_alimento_x_ubicacion.getText()),
                                         Integer.parseInt(id_text_tiempo_en_regenerar_alimento.getText())
                                 );
-                                fa.init(mi_canvas, img_fuente_alimento, img_fuente_alimento_no_disp, x, y);
-                                matriz.get(y, x).setObjeto_en_juego(fa);
-
+                                matriz.set(y, x, fa);
                                 break;
 
                             default:
+                                // por default las casillas son VACIAS
                                 image = null;
                                 break;
                         }
@@ -347,6 +339,24 @@ public class C_Inicio {
         };
 
         new Thread(task).start();
+
+        Task task_prueba = new Task<Object>() {
+            @Override
+            protected Object call() throws Exception {
+
+                while (true) {
+                    System.out.println("PASO 1");
+                    ((FuenteAlimento) matriz.get(0, 0)).consumirAlimento(2);
+                    System.out.println("PASO 3: ");
+
+                    Thread.sleep(1000);
+                }
+
+                //return null;
+            }
+        };
+
+        new Thread(task_prueba).start();
     }
 
     @FXML

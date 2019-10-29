@@ -64,7 +64,6 @@
                                  </font>
                               </Text>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cantidad disponible por ubicación" GridPane.rowIndex="10" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tiempo de disponiblidad (seg.)" GridPane.rowIndex="11" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Duración de alimentos en nido (seg.)" GridPane.rowIndex="8" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cantidad mínima de alimento en nido" GridPane.rowIndex="7" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nidos" GridPane.rowIndex="5">
@@ -82,10 +81,9 @@
                               <TextField fx:id="id_text_cantidad_alimento_min_x_nido" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                               <TextField fx:id="id_text_duración_alimento_en_nido" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                               <TextField fx:id="id_text_cantidad_alimento_disponible_x_ubicacion" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                              <TextField fx:id="id_text_tiempo_disponible_alimento_x_ubicacion" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                              <TextField fx:id="id_text_tiempo_en_regenerar_alimento" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <TextField fx:id="id_text_tiempo_en_regenerar_alimento" GridPane.columnIndex="1" GridPane.rowIndex="11" />
                               <TextField fx:id="id_text_lapsos_tiempo_duracion" GridPane.columnIndex="1" GridPane.rowIndex="14" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tiempo en regenerar (seg.)" GridPane.rowIndex="12" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tiempo en regenerar (seg.)" GridPane.rowIndex="11" />
                            </children>
                         </GridPane>
                      </children>
