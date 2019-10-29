@@ -32,45 +32,6 @@ public class FuenteAlimento extends Celda {
         this.tiempo_regenerar = tiempo_regenerar * 1000;
     }
 
-    /**
-     * Una vez que se crea una fuente de alimento, desde C_Inicio se llama a esta para iniciar
-     * .. su comportamiento en un hilo
-     * @param c: Canvas por el cual se pinta la fuente de alimento en la IU
-     * @param img_disponible
-     * @param img_no_disponible
-     * @param x: Coordenada X en la matriz
-     * @param y: Coordenada Y en la matriz
-     */
-    public void init(CanvasJuego c, Image img_disponible, Image img_no_disponible) {
-
-        Task task = new Task<Object>() {
-            @Override
-            protected Object call() {
-                long inicio = System.currentTimeMillis();
-
-                while (juego_activo) {
-                    if (cantidadDisponible <= 0) {
-                        try {
-                            Thread.sleep(tiempo_regenerar);
-                            disponible = true;
-                            cantidadDisponible = cantidad;
-                            c.dibujar_canvas(img_disponible, getFila(), getColumna());
-                        } catch (InterruptedException e) {
-                            System.out.println("Error: tiempo_regenerar. FuenteAlimento"); //e.printStackTrace();
-                        }
-                    }
-                    else {
-                        c.dibujar_canvas(img_disponible, getFila(), getColumna());
-                        disponible = true;
-                    }
-                }
-                return null;
-            }
-        };
-
-        new Thread(task).start();
-    }
-
     public synchronized int consumirAlimento(int pCantidadConsumir) {
         final int[] valorRetorno = {0};
 
@@ -89,9 +50,9 @@ public class FuenteAlimento extends Celda {
                             valorRetorno[0] = pCantidadConsumir;
                             cantidadDisponible -= pCantidadConsumir;
                         }
-                        // Si la cantidad de alimentos es < 0, realizar la producción en otro hilo-
+                        // Si la cantidad de alimentos es < 0, realizar la producción en otro hilo
                         // Generando el alimento en otro hilo asegura que el agente no se quede esperando su disponibilidad
-                        //System.out.println("Cantidad Disponible: " + cantidadDisponible);
+                        // System.out.println("Cantidad Disponible: " + cantidadDisponible);
 
                         if (cantidadDisponible <= 0) {
                             generarAlimento();
