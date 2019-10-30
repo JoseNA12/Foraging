@@ -4,6 +4,7 @@ import modelo.otros.Celda;
 
 import java.util.ArrayList;
 
+
 public class Nido extends Celda {
 
     private String ID;
@@ -12,31 +13,39 @@ public class Nido extends Celda {
     private int duracion_alimento;
     private ArrayList<Agente> agentes;
 
+    private int alimentoRecolectado;
+
+    // parametros de agentes
     private int cantidad_agentes;
+    private boolean tienenVida = false;
+    private int cantidadAlimentoRecoger;
+    private int cantidadVida;
+    private boolean reproduccionAgentes;
 
 
-    public Nido(Celda pCelda, int ID, int capacidad_maxima_alimento, int capacidad_minima_alimento, int duracion_alimento, int cantidad_agentes) {
+    public Nido(Celda pCelda, int ID, int capacidad_maxima_alimento, int capacidad_minima_alimento,
+                int duracion_alimento, int cantidad_agentes,
+                boolean pTienenVida, int pCantidaAlimentoRecoger, int pCantidadVida, boolean pReproduccionAgentes) {
+
         super(pCelda.getFila(), pCelda.getColumna(), pCelda.getTipo_objeto());
 
-        this.ID = ID + "Nido";
+        this.ID = ID + "_Nido_";
         this.capacidad_maxima_alimento = capacidad_maxima_alimento;
         this.capacidad_minima_alimento = capacidad_minima_alimento;
         this.duracion_alimento = duracion_alimento;
         this.cantidad_agentes = cantidad_agentes;
         this.agentes = new ArrayList<>();
+
+        this.alimentoRecolectado = 0;
+
+        this.tienenVida = pTienenVida;
+        this.cantidadAlimentoRecoger = pCantidaAlimentoRecoger;
+        this.cantidadVida = pCantidadVida;
+        this.reproduccionAgentes = pReproduccionAgentes;
     }
 
-    public void crearEnjambre(boolean pTienenVida, int pCantidaAlimentoRecoger, int... x) {
-        for (int i = 0; i < cantidad_agentes; i++) {
-            String id = this.ID + "_Agente_" + i;
-
-            if (pTienenVida) {
-                this.agentes.add(new Agente(id, pCantidaAlimentoRecoger, true, x[0]));
-            }
-            else {
-                this.agentes.add(new Agente(id, pCantidaAlimentoRecoger));
-            }
-        }
+    public void addAgente(Agente pAgente) {
+        this.agentes.add(pAgente);
     }
 
     public String getID() {
@@ -63,6 +72,14 @@ public class Nido extends Celda {
         this.capacidad_minima_alimento = capacidad_minima_alimento;
     }
 
+    public int getAlimentoRecolectado() {
+        return alimentoRecolectado;
+    }
+
+    public void setAlimentoRecolectado(int alimentoRecolectado) {
+        this.alimentoRecolectado = alimentoRecolectado;
+    }
+
     public int getDuracion_alimento() {
         return duracion_alimento;
     }
@@ -77,5 +94,37 @@ public class Nido extends Celda {
 
     public void setCantidad_agentes(int cantidad_agentes) {
         this.cantidad_agentes = cantidad_agentes;
+    }
+
+    public boolean isTienenVida() {
+        return tienenVida;
+    }
+
+    public void setTienenVida(boolean tienenVida) {
+        this.tienenVida = tienenVida;
+    }
+
+    public int getCantidadAlimentoRecoger() {
+        return cantidadAlimentoRecoger;
+    }
+
+    public void setCantidadAlimentoRecoger(int cantidadAlimentoRecoger) {
+        this.cantidadAlimentoRecoger = cantidadAlimentoRecoger;
+    }
+
+    public int getCantidadVida() {
+        return cantidadVida;
+    }
+
+    public void setCantidadVida(int cantidadVida) {
+        this.cantidadVida = cantidadVida;
+    }
+
+    public boolean isReproduccionAgentes() {
+        return reproduccionAgentes;
+    }
+
+    public void setReproduccionAgentes(boolean reproduccionAgentes) {
+        this.reproduccionAgentes = reproduccionAgentes;
     }
 }

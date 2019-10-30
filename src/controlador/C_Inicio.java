@@ -17,11 +17,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.converter.IntegerStringConverter;
 import modelo.*;
+import modelo.AlgoritmoHormiga.NidoHormigas;
 import modelo.otros.Celda;
 import modelo.otros.Objeto_IU;
 import modelo.otros.Path_Imagenes;
+import modelo.otros.TipoEnjambre;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class C_Inicio {
@@ -76,8 +80,8 @@ public class C_Inicio {
     private int min_filas = 10;
     private int min_columnas = 10;
 
-    private int cant_filas = 0;
-    private int cant_columnas = 0;
+    public static int cant_filas = 0;
+    public static int cant_columnas = 0;
 
     // indica que objeto poner en la matriz seleccionable
     private Objeto_IU obj_matriz_botones = null;
@@ -88,9 +92,6 @@ public class C_Inicio {
 
     // cuando el usuario pone un objeto en la matriz de botones, se usa esta matriz para
     // .. almacenar un objeto Celda y asi trabajar sobre esta.
-    // Antes de presionar el boton "Iniciar simulación" esta matriz nada mas tiene objetos Celda con
-    // .. valores: fila, columna y Objeto_IU, y el otro objeto que puede ser: Nido, FuenteAlimento u Obstaculo
-    // .. se setea una vez presionado el boton "Iniciar simulación".
     private static Matriz_grafo matriz;
 
     // variable por la cual se imprimen cosas/objectos en la IU
@@ -280,8 +281,9 @@ public class C_Inicio {
     void onButtonClick_IniciarSimulacion(ActionEvent event) throws InterruptedException {
         id_gridPane.getChildren().clear();
         juego_activo = true;
+        List<TipoEnjambre> enjambresUsados = new ArrayList<>();
+
         estadoBotones_iniciar_simulacion(true);
-        //GraphicsContext gc = id_canvas_juego.getGraphicsContext2D();
 
         Image image = null;
 
@@ -297,18 +299,7 @@ public class C_Inicio {
 
                     case NIDO:
                         image = mi_canvas.getImg_nido();
-
-                        Nido nido = new Nido(pCelda, x + y,
-                                Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
-                                Integer.parseInt(id_text_cantidad_alimento_min_x_nido.getText()),
-                                Integer.parseInt(id_text_duración_alimento_en_nido.getText()),
-                                Integer.parseInt(id_text_cantidad_agentes_x_nido.getText())
-                        );
-                        nido.crearEnjambre(
-                                id_check_agentes_morir.isSelected(),
-                                Integer.parseInt(id_text_cantidad_alimento_recoger.getText()),
-                                Integer.parseInt(id_text_vida_agentes.getText())
-                        );
+                        Nido nido = crearEnjambre(enjambresUsados, pCelda, x + y);
                         matriz.set(y, x, nido);
                         break;
 
@@ -336,6 +327,58 @@ public class C_Inicio {
     void onButtonClick_DetenerSimulacion(ActionEvent event) {
         juego_activo = false;
         estadoBotones_detener_simulacion(true);
+    }
+
+    // retornar un nido a crear acorde a los algoritmos implementados
+    private Nido crearEnjambre(List<TipoEnjambre> enjambresUsados, Celda pCelda, int ID) {
+        TipoEnjambre enjambre_enum;
+        List<TipoEnjambre> enjambresDisponibles = new ArrayList(Arrays.asList(TipoEnjambre.class.getEnumConstants()));
+
+        for (TipoEnjambre i: enjambresUsados) {
+            enjambresDisponibles.remove(i); // de todos los disponibles elimino los utilizados
+        }
+
+        if (enjambresDisponibles.size() > 0) {
+            enjambre_enum = enjambresDisponibles.get(0);
+            enjambresUsados.add(enjambresDisponibles.get(0));
+        }
+        else { // si todos los tipos de enjambres fueron usados, repita de nuevo la lista
+            enjambresUsados = Arrays.asList(TipoEnjambre.class.getEnumConstants());
+            enjambre_enum = enjambresUsados.get(0);
+        }
+        Nido nido = null;
+
+        switch (enjambre_enum) {
+            case HORMIGA:
+                nido = new NidoHormigas(
+                        pCelda, ID,
+                        Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
+                        Integer.parseInt(id_text_cantidad_alimento_min_x_nido.getText()),
+                        Integer.parseInt(id_text_duración_alimento_en_nido.getText()),
+                        Integer.parseInt(id_text_cantidad_agentes_x_nido.getText()),
+                        id_check_agentes_morir.isSelected(),
+                        Integer.parseInt(id_text_cantidad_alimento_recoger.getText()),
+                        Integer.parseInt(id_text_vida_agentes.getText()),
+                        id_check_agentes_reproduccion.isSelected()
+                );
+                break;
+            case FIDUCIAL:
+                nido = new NidoHormigas( // <<<<<--------------- CAMBIAR
+                        pCelda, ID,
+                        Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
+                        Integer.parseInt(id_text_cantidad_alimento_min_x_nido.getText()),
+                        Integer.parseInt(id_text_duración_alimento_en_nido.getText()),
+                        Integer.parseInt(id_text_cantidad_agentes_x_nido.getText()),
+                        id_check_agentes_morir.isSelected(),
+                        Integer.parseInt(id_text_cantidad_alimento_recoger.getText()),
+                        Integer.parseInt(id_text_vida_agentes.getText()),
+                        id_check_agentes_reproduccion.isSelected()
+                );
+                break;
+            default:
+                break;
+        }
+        return nido;
     }
 
     private void ejemplo_hilo() {

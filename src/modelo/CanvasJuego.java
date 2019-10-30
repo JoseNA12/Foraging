@@ -23,6 +23,7 @@ public class CanvasJuego {
     private Image img_fuente_alimento;
     private Image img_fuente_alimento_no_disp;
 
+
     public CanvasJuego(Canvas canvas) {
         this.canvas = canvas;
 

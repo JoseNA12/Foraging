@@ -77,11 +77,11 @@ public class FuenteAlimento extends Celda {
         Task task = new Task<Object>() {
             @Override
             protected Object call() throws Exception {
-                System.out.println("REGENERANDO...");
+                //System.out.println("REGENERANDO...");
                 regenerando = true;
                 mi_canvas.dibujar_canvas(mi_canvas.getImg_fuente_alimento_no_disp(), getFila(), getColumna());
                 Thread.sleep(tiempo_regenerar);
-                System.out.println("LISTO, ALIMENTOS DISPONIBLES...");
+                //System.out.println("LISTO, ALIMENTOS DISPONIBLES...");
                 mi_canvas.dibujar_canvas(mi_canvas.getImg_fuente_alimento(), getFila(), getColumna());
                 regenerando = false;
                 cantidadDisponible = cantidad;

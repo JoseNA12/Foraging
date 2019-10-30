@@ -1,24 +1,30 @@
 package modelo;
 
 public class Agente {
+
     private String ID;
     private int cantidad_alimento_recoger;
-    private boolean tieneVida = false;
+    private boolean tieneVida;
     private int vida;
 
+    private Posicion posicion;
 
-    public Agente(String ID, int cantidad_alimento_recoger) {
-        this.ID = ID;
-        this.cantidad_alimento_recoger = cantidad_alimento_recoger;
-    }
 
-    public Agente(String ID, int cantidad_alimento_recoger, boolean tieneVida, int vida) {
+    public Agente(Posicion posicion, String ID, int cantidad_alimento_recoger, boolean tieneVida, int vida) {
         this.ID = ID;
         this.cantidad_alimento_recoger = cantidad_alimento_recoger;
         this.tieneVida = tieneVida;
         this.vida = vida;
+        this.posicion = posicion;
     }
 
+    public Posicion getPosicionNido() {
+        return posicion;
+    }
+
+    public void setPosicionNido(Posicion posicion) {
+        this.posicion = posicion;
+    }
 
     public String getID() {
         return ID;

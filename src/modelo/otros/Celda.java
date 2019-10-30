@@ -1,32 +1,32 @@
 package modelo.otros;
 
+import modelo.Posicion;
+
 public class Celda {
 
-    private int fila;
-    private int columna;
+    private Posicion posicion;
     private Objeto_IU tipo_objeto;
 
 
     public Celda(int fila, int columna, Objeto_IU tipo_objeto) {
-        this.fila = fila;
-        this.columna = columna;
+        this.posicion = new Posicion(fila, columna);
         this.tipo_objeto = tipo_objeto;
     }
 
     public int getFila() {
-        return fila;
+        return this.posicion.getFila();
     }
 
     public void setFila(int fila) {
-        this.fila = fila;
+        this.posicion.setFila(fila);
     }
 
     public int getColumna() {
-        return columna;
+        return this.posicion.getColumna();
     }
 
     public void setColumna(int columna) {
-        this.columna = columna;
+        this.posicion.setColumna(columna);
     }
 
     public Objeto_IU getTipo_objeto() {
@@ -39,8 +39,8 @@ public class Celda {
 
     public String toString() {
         if (tipo_objeto != null) {
-            return tipo_objeto.getContenido() + ": " + String.valueOf(fila) + "," + String.valueOf(columna);
+            return tipo_objeto.getContenido() + ": " + String.valueOf(this.posicion.getFila()) + "," + String.valueOf(this.posicion.getColumna());
         }
-        return "NULL: " + String.valueOf(fila) + "," + String.valueOf(columna);
+        return "CELDA: " + String.valueOf(this.posicion.getFila()) + "," + String.valueOf(this.posicion.getColumna());
     }
 }

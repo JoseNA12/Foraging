@@ -1,6 +1,8 @@
 package modelo;
 
 import modelo.otros.Celda;
+import modelo.otros.Objeto_IU;
+
 import java.util.ArrayList;
 
 
@@ -10,10 +12,10 @@ import java.util.ArrayList;
  * El modelo Celda tiene:
  *      - fila              (int)
  *      - columna           (int)
- *      - tipo_objeto       (Enum que indica si es Nido, Obstaculo, FuenteAlimento o Celda libre)
- *      - objeto_en_juego   (Objeto modelo: puede ser Nido, Obstaculo o FuenteAlimento)
+ *      - tipo_objeto       (Indica si es Nido, Obstaculo, FuenteAlimento o Celda libre)
  */
 public class Matriz_grafo {
+
     private ArrayList<ArrayList<Celda>> matriz;
 
 
@@ -33,4 +35,17 @@ public class Matriz_grafo {
         matriz.get(fila).set(columna, pCelda);
     }
 
+    public boolean isFuenteAlimento(int fila, int columna) {
+        if (this.get(fila, columna).getTipo_objeto() == Objeto_IU.ALIMENTO) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isObstaculo(int fila, int columna) {
+        if (this.get(fila, columna).getTipo_objeto() == Objeto_IU.OBSTACULO) {
+            return true;
+        }
+        return false;
+    }
 }
