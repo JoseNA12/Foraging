@@ -22,6 +22,7 @@ public class CanvasJuego {
     private Image img_nido;
     private Image img_fuente_alimento;
     private Image img_fuente_alimento_no_disp;
+    private Image img_agente;
 
 
     public CanvasJuego(Canvas canvas) {
@@ -31,13 +32,13 @@ public class CanvasJuego {
         img_nido = new Image(getClass().getResourceAsStream(Path_Imagenes.NIDO.getContenido()));
         img_fuente_alimento = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO.getContenido()));
         img_fuente_alimento_no_disp = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO_NO_DISP.getContenido()));
+        img_agente = new Image(getClass().getResourceAsStream(Path_Imagenes.AGENTE.getContenido()));
     }
 
     public synchronized void dibujar_canvas(Image pImagen, int x, int y) {
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
         gc.clearRect(x * width_btn_matriz, y * height_btn_matriz, width_btn_matriz, height_btn_matriz);
         gc.drawImage(pImagen, x * width_btn_matriz, y * height_btn_matriz, width_btn_matriz, height_btn_matriz);
-
     }
 
     public void limpiarCasilla(int x, int y) {
@@ -75,5 +76,13 @@ public class CanvasJuego {
 
     public void setImg_fuente_alimento_no_disp(Image img_fuente_alimento_no_disp) {
         this.img_fuente_alimento_no_disp = img_fuente_alimento_no_disp;
+    }
+
+    public Image getImg_agente() {
+        return img_agente;
+    }
+
+    public void setImg_agente(Image img_agente) {
+        this.img_agente = img_agente;
     }
 }

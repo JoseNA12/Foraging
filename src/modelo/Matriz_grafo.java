@@ -35,6 +35,13 @@ public class Matriz_grafo {
         matriz.get(fila).set(columna, pCelda);
     }
 
+    public boolean isNido(int fila, int columna) {
+        if (this.get(fila, columna).getTipo_objeto() == Objeto_IU.NIDO) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean isFuenteAlimento(int fila, int columna) {
         if (this.get(fila, columna).getTipo_objeto() == Objeto_IU.ALIMENTO) {
             return true;

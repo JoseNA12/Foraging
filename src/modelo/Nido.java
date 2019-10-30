@@ -48,6 +48,10 @@ public class Nido extends Celda {
         this.agentes.add(pAgente);
     }
 
+    public void removeAgente(Agente pAgente) {
+        this.agentes.remove(pAgente);
+    }
+
     public int getCantidadAgentes() {
         return this.agentes.size();
     }

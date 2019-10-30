@@ -16,8 +16,8 @@ public class Hormiga extends Agente {
         this.caminoACasa = new ArrayList<>();
     }
 
-    public void recordarPosicion(int x, int y) {
-        this.caminoACasa.add(new Posicion(x, y));
+    public void recordarPosicion(Posicion posicion) {
+        this.caminoACasa.add(posicion);
     }
 
     public void clearCaminoACasa() {

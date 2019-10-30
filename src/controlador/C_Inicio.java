@@ -98,7 +98,7 @@ public class C_Inicio {
     public static CanvasJuego mi_canvas;
 
     public static boolean juego_activo = false;
-    public static int lapsos_tiempo_ejecucion;
+    public static double lapsos_tiempo_ejecucion;
 
 
     public void initialize() throws Exception {
@@ -109,7 +109,7 @@ public class C_Inicio {
 
         // validaciones para que los inputs solo acepten valores numericos
         id_text_cantidad_agentes_x_nido.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                15, integerFilter));
+                10, integerFilter));
         id_text_cantidad_alimento_recoger.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 3, integerFilter));
         id_text_vida_agentes.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
@@ -124,8 +124,7 @@ public class C_Inicio {
                 20, integerFilter));
         id_text_tiempo_en_regenerar_alimento.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 30, integerFilter));
-        id_text_lapsos_tiempo_duracion.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                1, integerFilter));
+        id_text_lapsos_tiempo_duracion.setText("1.0");
 
         id_check_agentes_morir.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -282,27 +281,29 @@ public class C_Inicio {
     void onButtonClick_IniciarSimulacion(ActionEvent event) throws InterruptedException {
         id_gridPane.getChildren().clear();
         juego_activo = true;
-        lapsos_tiempo_ejecucion = Integer.valueOf(id_text_lapsos_tiempo_duracion.getText()) * 1000;
+        lapsos_tiempo_ejecucion = Double.valueOf(id_text_lapsos_tiempo_duracion.getText()) * 1000;
         List<TipoEnjambre> enjambresUsados = new ArrayList<>();
 
         estadoBotones_iniciar_simulacion(true);
 
         Image image = null;
 
-        for (int y = 0; y < cant_filas; y++) {
-            for (int x = 0; x < cant_columnas; x++) {
-                Celda pCelda = matriz.get(y, x);
+        for (int i = 0; i < cant_filas; i++) {
+            for (int j = 0; j < cant_columnas; j++) {
+                Celda pCelda = matriz.get(i, j);
 
                 switch (pCelda.getTipo_objeto()) {
                     case OBSTACULO:
                         image = mi_canvas.getImg_obstaculo();
-                        matriz.set(y, x, new Obstaculo(pCelda));
+                        matriz.set(i, j, new Obstaculo(pCelda));
+                        mi_canvas.dibujar_canvas(image, i, j);
                         break;
 
                     case NIDO:
                         image = mi_canvas.getImg_nido();
-                        Nido nido = crearEnjambre(enjambresUsados, pCelda, x + y);
-                        matriz.set(y, x, nido);
+                        Nido nido = crearEnjambre(enjambresUsados, pCelda, i + j);
+                        matriz.set(i, j, nido);
+                        mi_canvas.dibujar_canvas(image, i, j);
                         break;
 
                     case ALIMENTO:
@@ -312,7 +313,8 @@ public class C_Inicio {
                                 Integer.parseInt(id_text_cantidad_alimento_disponible_x_ubicacion.getText()),
                                 Integer.parseInt(id_text_tiempo_en_regenerar_alimento.getText())
                         );
-                        matriz.set(y, x, fa);
+                        matriz.set(i, j, fa);
+                        mi_canvas.dibujar_canvas(image, i, j);
                         break;
 
                     default:
@@ -320,7 +322,7 @@ public class C_Inicio {
                         image = null;
                         break;
                 }
-                mi_canvas.dibujar_canvas(image, x, y); // dibujar los objetos que el usuario seleccionó
+                 // dibujar los objetos que el usuario seleccionó
             }
         }
     }
