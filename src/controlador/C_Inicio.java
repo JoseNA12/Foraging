@@ -92,12 +92,13 @@ public class C_Inicio {
 
     // cuando el usuario pone un objeto en la matriz de botones, se usa esta matriz para
     // .. almacenar un objeto Celda y asi trabajar sobre esta.
-    private static Matriz_grafo matriz;
+    public static Matriz_grafo matriz;
 
     // variable por la cual se imprimen cosas/objectos en la IU
     public static CanvasJuego mi_canvas;
 
     public static boolean juego_activo = false;
+    public static int lapsos_tiempo_ejecucion;
 
 
     public void initialize() throws Exception {
@@ -281,6 +282,7 @@ public class C_Inicio {
     void onButtonClick_IniciarSimulacion(ActionEvent event) throws InterruptedException {
         id_gridPane.getChildren().clear();
         juego_activo = true;
+        lapsos_tiempo_ejecucion = Integer.valueOf(id_text_lapsos_tiempo_duracion.getText()) * 1000;
         List<TipoEnjambre> enjambresUsados = new ArrayList<>();
 
         estadoBotones_iniciar_simulacion(true);

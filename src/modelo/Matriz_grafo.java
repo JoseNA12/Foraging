@@ -48,4 +48,20 @@ public class Matriz_grafo {
         }
         return false;
     }
+
+    public synchronized boolean setAgenteCasilla(int fila, int columna) {
+        if (get(fila, columna).getTipo_objeto() != Objeto_IU.AGENTE) {
+            get(fila, columna).setTipo_objeto(Objeto_IU.AGENTE);
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized boolean setVacioCasilla(int fila, int columna) {
+        if (get(fila, columna).getTipo_objeto() != Objeto_IU.VACIO) {
+            get(fila, columna).setTipo_objeto(Objeto_IU.VACIO);
+            return true;
+        }
+        return false;
+    }
 }

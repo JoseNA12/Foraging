@@ -29,6 +29,10 @@ public class Celda {
         this.posicion.setColumna(columna);
     }
 
+    public Posicion getPosicion() {
+        return posicion;
+    }
+
     public Objeto_IU getTipo_objeto() {
         return tipo_objeto;
     }

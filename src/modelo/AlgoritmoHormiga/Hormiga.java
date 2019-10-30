@@ -20,7 +20,7 @@ public class Hormiga extends Agente {
         this.caminoACasa.add(new Posicion(x, y));
     }
 
-    public void clearAaminoACasa() {
+    public void clearCaminoACasa() {
         this.caminoACasa.clear();
     }
 

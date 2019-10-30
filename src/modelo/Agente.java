@@ -57,4 +57,9 @@ public class Agente {
     public void setVida(int vida) {
         this.vida = vida;
     }
+
+    public void restarVida(int i) {
+        this.vida -= i;
+    }
+
 }

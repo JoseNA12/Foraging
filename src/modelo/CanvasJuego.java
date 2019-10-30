@@ -40,6 +40,11 @@ public class CanvasJuego {
 
     }
 
+    public void limpiarCasilla(int x, int y) {
+        GraphicsContext gc = this.canvas.getGraphicsContext2D();
+        gc.clearRect(x * width_btn_matriz, y * height_btn_matriz, width_btn_matriz, height_btn_matriz);
+    }
+
     public Image getImg_obstaculo() {
         return img_obstaculo;
     }

@@ -32,7 +32,7 @@ public class Nido extends Celda {
         this.ID = ID + "_Nido_";
         this.capacidad_maxima_alimento = capacidad_maxima_alimento;
         this.capacidad_minima_alimento = capacidad_minima_alimento;
-        this.duracion_alimento = duracion_alimento;
+        this.duracion_alimento = duracion_alimento * 1000;
         this.cantidad_agentes = cantidad_agentes;
         this.agentes = new ArrayList<>();
 
@@ -46,6 +46,14 @@ public class Nido extends Celda {
 
     public void addAgente(Agente pAgente) {
         this.agentes.add(pAgente);
+    }
+
+    public int getCantidadAgentes() {
+        return this.agentes.size();
+    }
+
+    public ArrayList<Agente> getAgentes() {
+        return agentes;
     }
 
     public String getID() {
@@ -78,6 +86,10 @@ public class Nido extends Celda {
 
     public void setAlimentoRecolectado(int alimentoRecolectado) {
         this.alimentoRecolectado = alimentoRecolectado;
+    }
+
+    public void consumirAlimentoRecolectado() {
+        this.alimentoRecolectado -= 1;
     }
 
     public int getDuracion_alimento() {

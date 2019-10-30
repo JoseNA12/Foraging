@@ -5,7 +5,8 @@ public enum Objeto_IU {
     ALIMENTO("Fuente de alimento"),
     OBSTACULO("Obstaculo"),
     ELIMINAR("Eliminar..."),
-    VACIO("Vacio")
+    VACIO("Vacio"),
+    AGENTE("Agente"),
     ;
 
     private String contenido;
