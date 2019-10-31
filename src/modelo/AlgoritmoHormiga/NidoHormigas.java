@@ -4,6 +4,7 @@ import controlador.C_Inicio;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import modelo.Agente;
+import modelo.FuenteAlimento;
 import modelo.Nido;
 import modelo.Posicion;
 import modelo.otros.Celda;
@@ -25,7 +26,6 @@ public class NidoHormigas extends Nido {
     private final double feromonaInicial = 0.1;
 
     private Random random = new Random();
-    private double randomFactor = 0.01;
 
     private double matriz[][];
 
@@ -72,10 +72,10 @@ public class NidoHormigas extends Nido {
                         Hormiga h_ = (Hormiga) h;
 
                         if (h_.isBuscandoComida()) {
-                            moverHormiga(h_); Thread.sleep(5000);
+                            buscarComida(h_);
                         }
-                        else { // regresando al nido
-                            actualizarFeromonaCelda(h_.getPosicion().getFila(), h_.getPosicion().getColumna());
+                        else {
+                            irANido(h_);
                         }
 
                         if (isTienenVida()) {
@@ -94,42 +94,42 @@ public class NidoHormigas extends Nido {
                     }
 
                     Thread.sleep((long) lapsos_tiempo_ejecucion);
-
                 }
-                // los agentes pueden morir ? -> la vida (check)
-                // capacidad maxima y minima de alimento en nido (check)
-                // duración de alimento en nido (check)
-                // cantidad de alimento a recoger (check)
-
                 return null;
             }
         };
-
         new Thread(task).start();
     }
-    private void moverHormiga(Hormiga h) {
-        ArrayList<Posicion> celdasDisponibles = celdasVecinasDisponibles(h.getPosicion().getFila(), h.getPosicion().getColumna());
-        for (Posicion i: celdasDisponibles) {
-            System.out.println(i.getFila() + "/" + i.getColumna());
+
+    private void irANido(Hormiga h) {
+        actualizarFeromonaCelda(h.getPosicionActual());
+    }
+
+    private void buscarComida(Hormiga h) {
+        ArrayList<Posicion> celdasDisponibles = celdasVecinasDisponibles(h.getPosicionActual());
+        ArrayList<Posicion> fuentesAlimentoDisponibles = fuentesAlimentoVecinas(h.getPosicionActual());
+
+        if (fuentesAlimentoDisponibles.size() > 0) { // existe una fuente de alimento a su alrededor. Disponible y con cantidad > 0
+            Random randomGenerator = new Random();
+            int randomInt = randomGenerator.nextInt(fuentesAlimentoDisponibles.size()) + 1; // si hay varias escoja 1 al azar
+            Posicion p = fuentesAlimentoDisponibles.get(randomInt);
+
+            FuenteAlimento fa = ((FuenteAlimento) C_Inicio.matriz.get(p.getFila(), p.getColumna())); // obtengo el recurso
+            h.setCantidad_alimento_encontrado(fa.consumirAlimento(h.getCantidad_alimento_recoger()));
+            h.setBuscandoComida(false);
         }
-        Posicion p = caminoMasEfectivo(celdasDisponibles, h);
+        else {
+            Posicion p = caminoMasEfectivo(celdasDisponibles, h);
 
-        if (p != null) {
-            boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(p.getFila(), p.getColumna());
-            boolean pudoBorrarPosAnterior = C_Inicio.matriz.setVacioCasilla(h.getPosicion().getFila(), h.getPosicion().getColumna());
+            if (p != null) {
+                boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(p, h.getPosicionActual());
 
-            // al ser un metodo que toodo mundo usa (y es synchronized), prefiero asegurar
-            // .. que el agente si se pudo poner en la matriz general de juego
-            if (pudoPonerAgente) {
-                System.out.println("NUEVA POSICION: " + p.getFila() + "/" + p.getColumna());
-                System.out.println("HORMIGA: " + h.getPosicion().getFila() + "/" + h.getPosicion().getColumna());
-
-                if (!C_Inicio.matriz.isNido(h.getPosicion().getFila(), h.getPosicion().getColumna())) {
-                    mi_canvas.limpiarCasilla(h.getPosicion().getFila(), h.getPosicion().getColumna());
+                // al ser un metodo que toodo mundo usa (y es synchronized), prefiero asegurar
+                // .. que el agente si se pudo poner en la matriz general de juego
+                if (pudoPonerAgente) {
+                    h.setPosicionActual(p);
+                    h.recordarPosicion(p);
                 }
-                mi_canvas.dibujar_canvas(mi_canvas.getImg_agente(), 0, 28);
-                h.setPosicion(p);
-                h.recordarPosicion(p);
             }
         }
     }
@@ -164,14 +164,19 @@ public class NidoHormigas extends Nido {
         double total = 0.0;
         for (int i = 0; i < probabilidadCeldas.size(); i++) {
             total += probabilidadCeldas.get(i);
-            if (total >= r)
-                System.out.println("RETURN: " + celdasDisponibles.get(i).getFila() + "/" + celdasDisponibles.get(i).getColumna());
+
+            if (total >= r) {
+                //System.out.println("TOTAL: " + total + " | r: " + r + " | " + i);
                 return celdasDisponibles.get(i);
+            }
         }
+        // si retorna null, el agente esta bloquedo por algo. Pero puede esperar hasta su disponibilidad
         return null;
     }
 
-    private ArrayList<Posicion> celdasVecinasDisponibles(int i, int j) {
+    private ArrayList<Posicion> celdasVecinasDisponibles(Posicion p) {
+        int i = p.getFila();
+        int j = p.getColumna();
         int rowLimit = cant_filas - 1;
         int columnLimit = cant_columnas - 1;
         ArrayList<Posicion> celdasDisponibles = new ArrayList<>();
@@ -188,14 +193,34 @@ public class NidoHormigas extends Nido {
         return celdasDisponibles;
     }
 
-    private void actualizarFeromonaCelda(int x, int y) {
-        matriz[x][y] = (1 - evaporacion) * matriz[x][y];
+    private ArrayList<Posicion> fuentesAlimentoVecinas(Posicion p) {
+        int i = p.getFila();
+        int j = p.getColumna();
+        int rowLimit = cant_filas - 1;
+        int columnLimit = cant_columnas - 1;
+        ArrayList<Posicion> celdasDisponibles = new ArrayList<>();
+
+        for (int x = Math.max(0, i - 1); x <= Math.min(i + 1, rowLimit); x++) {
+            for (int y = Math.max(0, j - 1); y <= Math.min(j + 1, columnLimit); y++) {
+                if (x != i || y != j) {
+                    if (C_Inicio.matriz.get(x, y).getTipo_objeto() == Objeto_IU.ALIMENTO &&
+                            !((FuenteAlimento) C_Inicio.matriz.get(x, y)).isRegenerando()) {
+                        celdasDisponibles.add(new Posicion(x, y));
+                    }
+                }
+            }
+        }
+        return celdasDisponibles;
+    }
+
+    private void actualizarFeromonaCelda(Posicion p) {
+        matriz[p.getFila()][p.getColumna()] = (1 - evaporacion) * matriz[p.getFila()][p.getColumna()];
     }
 
     private void reproducirHormigas() {
         // si la cantidad de alimentos recolectados supera el máximo del nido
         // .. agregue una nueva hormiga
-        if (getAlimentoRecolectado() > getCapacidad_maxima_alimento()) {
+        if (super.getAlimentoRecolectado() > super.getCapacidad_maxima_alimento()) {
             super.addAgente(crearHormiga("bastarda"));
             super.consumirAlimentoRecolectado();
         }
@@ -208,4 +233,6 @@ public class NidoHormigas extends Nido {
         }
         return false;
     }
+
+
 }

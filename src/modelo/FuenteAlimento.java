@@ -19,7 +19,6 @@ public class FuenteAlimento extends Celda {
     private int cantidadDisponible = 0;
     //private int tiempo_disponible;
     private int tiempo_regenerar;
-    private boolean disponible = false;
     private boolean regenerando = false;
 
 
@@ -89,6 +88,22 @@ public class FuenteAlimento extends Celda {
             }
         };
         new Thread(task).start();
+    }
+
+    public int getCantidadDisponible() {
+        return cantidadDisponible;
+    }
+
+    public void setCantidadDisponible(int cantidadDisponible) {
+        this.cantidadDisponible = cantidadDisponible;
+    }
+
+    public boolean isRegenerando() {
+        return regenerando;
+    }
+
+    public void setRegenerando(boolean regenerando) {
+        this.regenerando = regenerando;
     }
 
     public int getCantidad() {

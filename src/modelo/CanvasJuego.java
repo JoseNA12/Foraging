@@ -37,8 +37,8 @@ public class CanvasJuego {
 
     public synchronized void dibujar_canvas(Image pImagen, int x, int y) {
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
-        gc.clearRect(x * width_btn_matriz, y * height_btn_matriz, width_btn_matriz, height_btn_matriz);
-        gc.drawImage(pImagen, x * width_btn_matriz, y * height_btn_matriz, width_btn_matriz, height_btn_matriz);
+        gc.clearRect(y * width_btn_matriz, x * height_btn_matriz, width_btn_matriz, height_btn_matriz);
+        gc.drawImage(pImagen, y * width_btn_matriz, x * height_btn_matriz, width_btn_matriz, height_btn_matriz);
     }
 
     public void limpiarCasilla(int x, int y) {

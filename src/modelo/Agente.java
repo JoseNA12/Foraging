@@ -7,23 +7,27 @@ public class Agente {
     private boolean tieneVida;
     private int vida;
 
-    private Posicion posicion;
+    private int cantidad_alimento_encontrado = 0;
+
+    private Posicion posicionNido;
+    private Posicion posicionActual;
 
 
-    public Agente(Posicion posicion, String ID, int cantidad_alimento_recoger, boolean tieneVida, int vida) {
+    public Agente(Posicion posicionNido, String ID, int cantidad_alimento_recoger, boolean tieneVida, int vida) {
         this.ID = ID;
         this.cantidad_alimento_recoger = cantidad_alimento_recoger;
         this.tieneVida = tieneVida;
         this.vida = vida;
-        this.posicion = posicion;
+        this.posicionNido = posicionNido;
+        this.posicionActual = posicionNido;
     }
 
     public Posicion getPosicionNido() {
-        return posicion;
+        return posicionNido;
     }
 
-    public void setPosicionNido(Posicion posicion) {
-        this.posicion = posicion;
+    public void setPosicionNido(Posicion posicionNido) {
+        this.posicionNido = posicionNido;
     }
 
     public String getID() {
@@ -62,11 +66,19 @@ public class Agente {
         this.vida -= i;
     }
 
-    public Posicion getPosicion() {
-        return posicion;
+    public Posicion getPosicionActual() {
+        return posicionActual;
     }
 
-    public void setPosicion(Posicion posicion) {
-        this.posicion = posicion;
+    public void setPosicionActual(Posicion posicionActual) {
+        this.posicionActual = posicionActual;
+    }
+
+    public int getCantidad_alimento_encontrado() {
+        return cantidad_alimento_encontrado;
+    }
+
+    public void setCantidad_alimento_encontrado(int cantidad_alimento_encontrado) {
+        this.cantidad_alimento_encontrado = cantidad_alimento_encontrado;
     }
 }

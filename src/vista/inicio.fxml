@@ -166,7 +166,7 @@
       </TabPane>
       <Pane fx:id="id_pane_matriz" layoutX="14.0" layoutY="14.0" prefHeight="684.0" prefWidth="936.0">
          <children>
-            <Canvas fx:id="id_canvas_juego" height="684.0" style="-fx-background-color: white;" width="936.0" />
+            <Canvas fx:id="id_canvas_juego" height="684.0" width="936.0" />
             <GridPane fx:id="id_gridPane" alignment="CENTER" gridLinesVisible="true" maxHeight="684.0" maxWidth="936.0">
               <columnConstraints>
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />

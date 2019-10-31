@@ -1,5 +1,6 @@
 package controlador;
 
+import com.sun.javafx.geom.Vec2d;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -17,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.converter.IntegerStringConverter;
 import modelo.*;
+import modelo.AlgoritmoHormiga.Hormiga;
 import modelo.AlgoritmoHormiga.NidoHormigas;
 import modelo.otros.Celda;
 import modelo.otros.Objeto_IU;
@@ -171,10 +173,10 @@ public class C_Inicio {
             setTamaniosBotones((int) Math.abs(id_pane_matriz.getWidth() / cant_columnas), (int) Math.abs(id_pane_matriz.getHeight() / cant_filas));
 
             // crear el grid con botones
-            for (int y = 0; y < cant_filas; y++) {
+            for (int i = 0; i < cant_filas; i++) {
                 ArrayList<Celda> pLista = new ArrayList<>();
 
-                for (int x = 0; x < cant_columnas; x++) {
+                for (int j = 0; j < cant_columnas; j++) {
                     Button btn = new Button();
                     btn.setMaxSize(width_btn_matriz, height_btn_matriz);
                     btn.setMinSize(width_btn_matriz, height_btn_matriz);
@@ -182,15 +184,15 @@ public class C_Inicio {
                     btn.setOnAction(btn_matriz_handler);
 
                     // almacenar en el boton su respectiva coordenada
-                    Celda c = new Celda(y, x, Objeto_IU.VACIO);
+                    Celda c = new Celda(i, j, Objeto_IU.VACIO);
                     btn.setUserData(c);
                     btn.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(Path_Imagenes.BLOQUE.getContenido()), width_btn_matriz, height_btn_matriz, false, false)));
 
                     pLista.add(c);
 
                     // poner en el grid pane el boton
-                    id_gridPane.setRowIndex(btn, y);
-                    id_gridPane.setColumnIndex(btn, x);
+                    id_gridPane.setRowIndex(btn, i);
+                    id_gridPane.setColumnIndex(btn, j);
                     id_gridPane.getChildren().add(btn);
                 }
                 matriz.add(pLista);
@@ -296,14 +298,12 @@ public class C_Inicio {
                     case OBSTACULO:
                         image = mi_canvas.getImg_obstaculo();
                         matriz.set(i, j, new Obstaculo(pCelda));
-                        mi_canvas.dibujar_canvas(image, i, j);
                         break;
 
                     case NIDO:
                         image = mi_canvas.getImg_nido();
                         Nido nido = crearEnjambre(enjambresUsados, pCelda, i + j);
                         matriz.set(i, j, nido);
-                        mi_canvas.dibujar_canvas(image, i, j);
                         break;
 
                     case ALIMENTO:
@@ -314,7 +314,6 @@ public class C_Inicio {
                                 Integer.parseInt(id_text_tiempo_en_regenerar_alimento.getText())
                         );
                         matriz.set(i, j, fa);
-                        mi_canvas.dibujar_canvas(image, i, j);
                         break;
 
                     default:
@@ -322,7 +321,8 @@ public class C_Inicio {
                         image = null;
                         break;
                 }
-                 // dibujar los objetos que el usuario seleccionó
+                mi_canvas.dibujar_canvas(image, i, j);
+                // dibujar los objetos que el usuario seleccionó
             }
         }
     }
