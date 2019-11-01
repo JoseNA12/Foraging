@@ -106,7 +106,7 @@ public class C_Inicio {
 
         // validaciones para que los inputs solo acepten valores numericos
         id_text_cantidad_agentes_x_nido.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                1, integerFilter));
+                5, integerFilter));
         id_text_cantidad_alimento_recoger.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 3, integerFilter));
         id_text_vida_agentes.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
@@ -121,7 +121,7 @@ public class C_Inicio {
                 20, integerFilter));
         id_text_tiempo_en_regenerar_alimento.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 30, integerFilter));
-        id_text_lapsos_tiempo_duracion.setText("1");
+        id_text_lapsos_tiempo_duracion.setText("0.7");
 
         id_check_agentes_morir.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override

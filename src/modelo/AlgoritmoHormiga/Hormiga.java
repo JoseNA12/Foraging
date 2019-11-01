@@ -1,27 +1,33 @@
 package modelo.AlgoritmoHormiga;
 
 import controlador.optimizacion.BreadthFirstSearch;
+import javafx.geometry.Pos;
 import modelo.Agente;
 import modelo.Posicion;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Hormiga extends Agente {
 
     private boolean buscandoComida = true;
     private ArrayList<Posicion> caminoACasa;
-    private Posicion cobertura;
+    private Posicion cobertura; // se utiliza para realizar un mapeo de la ruta del mapa al momento de regresar al nido
     private double feromonasPercibidas = 0;
+
+    private Set<String> pasosRealizados; // se utiliza para no repetir pasos, pero se prioriza la celda con feromonas
 
 
     public Hormiga(Posicion posicion, String ID, int cantidad_alimento_recoger, boolean tieneVida, int vida) {
         super(posicion, ID, cantidad_alimento_recoger, tieneVida, vida);
         this.caminoACasa = new ArrayList<>();
         this.cobertura = super.getPosicionActual();
+        this.pasosRealizados = new HashSet<>();
     }
 
     public void recordarPosicion(Posicion posicion) {
         this.caminoACasa.add(posicion);
+        recordarCelda(posicion);
         this.feromonasPercibidas += 1;
 
         if (this.cobertura.getFila() < posicion.getFila()) {
@@ -32,10 +38,30 @@ public class Hormiga extends Agente {
         }
     }
 
+    /**
+     * Evitar repeticiones de celdas al momento de buscar comida
+     * @param posicion
+     */
+    public void recordarCelda(Posicion posicion) {
+        if (!recorriCelda(posicion)) {
+            this.pasosRealizados.add(posicion.getFila() + "," + posicion.getColumna());
+        }
+    }
+
+    public boolean recorriCelda(Posicion posicion) {
+        return pasosRealizados.contains(posicion.getFila() + "," + posicion.getColumna());
+    }
+
     public boolean isBuscandoComida() {
         return buscandoComida;
     }
 
+    /**
+     * Cambia el estado de la hormiga. True -> busca comida, False -> Ir al nido.
+     * En caso de que el estado indique ir al nido, por medio de un algoritmo de optimización
+     * .. se obtiene la ruta mas corta hacia el nido
+     * @param buscandoComida
+     */
     public void setBuscandoComida(boolean buscandoComida) {
         this.buscandoComida = buscandoComida;
 
@@ -43,6 +69,7 @@ public class Hormiga extends Agente {
             this.cobertura = super.getPosicionNido();
             this.caminoACasa = new ArrayList<>();
             this.feromonasPercibidas = 0;
+            this.pasosRealizados = new HashSet<>();
         }
         else {
             // algoritmo de optimización, retorna la mejor ruta para el nido de la hormiga

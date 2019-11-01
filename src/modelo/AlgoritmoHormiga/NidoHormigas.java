@@ -38,6 +38,9 @@ public class NidoHormigas extends Nido {
         iniciar();
     }
 
+    /**
+     * Crear una cantidad determinada de agentes
+     */
     public void crearEnjambre() {
         for (int i = 0; i < getCantidad_agentes(); i++) {
             String id = super.getID() + "_Hormiga_Agente_" + i;
@@ -45,10 +48,20 @@ public class NidoHormigas extends Nido {
         }
     }
 
+    /**
+     * Crear una hormiga para el nido
+     * @param id
+     * @return
+     */
     private Hormiga crearHormiga(String id) {
         return new Hormiga(super.getPosicion(), id, super.getCantidadAlimentoRecoger(), super.isTienenVida(), super.getCantidadVida());
     }
 
+    /**
+     * Inicializa la matriz inicial de feromonas.
+     * Es importantes ya que, el algoritmo necesita de valores base para realizar los calculos probabilisticos
+     * @return
+     */
     private double[][] generarMatrizFeromonas() {
         double[][] randomMatrix = new double[cant_filas][cant_columnas];
 
@@ -60,6 +73,9 @@ public class NidoHormigas extends Nido {
         return randomMatrix;
     }
 
+    /**
+     * Método principal que se encarga de dar inicio al comportamiento de un nido
+     */
     private void iniciar() {
         Task task = new Task<Object>() {
             @Override
@@ -86,7 +102,9 @@ public class NidoHormigas extends Nido {
                             }
                         }
                     }
-                    reproducirHormigas();
+                    if (isReproduccionAgentes()) {
+                        reproducirHormigas();
+                    }
 
                     long diferencia = System.currentTimeMillis() - inicio;
                     if (consumirAlimentoNido(diferencia)) {
@@ -101,6 +119,18 @@ public class NidoHormigas extends Nido {
         new Thread(task).start();
     }
 
+    /**
+     * Una determinada hormiga busca una fuente de alimento.
+     * Se inspeccionan las celdas cercanas y se determina si es una fuente de alimento,
+     * .. si lo es, se consume el recurso y se establece la bandera en 'setBuscandoComida' indicando
+     * .. que es necesario ir al nido.
+     * En caso de no haber fuentes disponibles, se calculas las celdas disponibles alrededor de la
+     * .. hormiga, con prioridad de las celdas no visitadas y tambien la cantidad de feromonas.
+     * Por último, si una hormiga percibe un rastro de feromonas, esta la almacena para realizar
+     * .. el debido calcula al momento de devolverse con la comida, esto indica que el camino puede
+     * .. ser muuy factible.
+     * @param h
+     */
     private void buscarComida(Hormiga h) {
         ArrayList<Posicion> fuentesAlimentoDisponibles = fuentesAlimentoVecinas(h.getPosicionActual());
 
@@ -114,7 +144,7 @@ public class NidoHormigas extends Nido {
             h.setBuscandoComida(false);
         }
         else {
-            ArrayList<Posicion> celdasDisponibles = celdasVecinasDisponibles(h.getPosicionActual());
+            ArrayList<Posicion> celdasDisponibles = celdasVecinasDisponibles(h);
             Posicion p = caminoMasEfectivo(celdasDisponibles);
 
             if (p != null) {
@@ -126,7 +156,7 @@ public class NidoHormigas extends Nido {
                     h.setPosicionActual(p);
                     h.recordarPosicion(p);
 
-                    if (matrizFeromonas[p.getFila()][p.getFila()] > 0) { // Q/C^k (if component(i, j) was used by ant)
+                    if (matrizFeromonas[p.getFila()][p.getFila()] > feromonaInicial) { // Q/C^k (if component(i, j) was used by ant)
                         h.addFeromonasPercibidas(feromonaHormiga / super.getCantidad_agentes());
                     }
                 }
@@ -134,9 +164,16 @@ public class NidoHormigas extends Nido {
         }
     }
 
+    /**
+     * Una hormiga se dirigue a su nido mediante un camino establecido por ella misma, optimizado para su mejor ruta.
+     * Una vez llega a su nido deposita la cantidad de alimento recolectado, y prosigue con la busqueda acorde
+     * .. a la feromonas existentes.
+     * @param h
+     */
     private void irANido(Hormiga h) {
-        ArrayList<Posicion> caminoNido = h.getCaminoACasa();
+        depositarFeromonas(h, h.getPosicionActual());
 
+        ArrayList<Posicion> caminoNido = h.getCaminoACasa();
         if (caminoNido.size() > 0) {
             //actualizarFeromonaCelda(h.getPosicionActual());
             boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_alimento_1(), caminoNido.get(0), h.getPosicionActual());
@@ -144,7 +181,6 @@ public class NidoHormigas extends Nido {
             if (pudoPonerAgente) {
                 h.setPosicionActual(caminoNido.get(0));
                 h.removeCeldaCaminoCasa(0); // remover de caminoNido la ubicacion utilizada
-                depositarFeromonas(h, h.getPosicionActual());
             }
         }
         else {
@@ -155,16 +191,16 @@ public class NidoHormigas extends Nido {
         }
     }
 
+    /**
+     * Selección de arista acorde a las celdas disponibles, considerando la cantidad de feronomas depositadas
+     * .. con relación a prioridades probabilisticas.
+     *
+     * p^k = (t^α)(n^β) / Σ(t^α)(n^β)
+     *
+     * ->> t^α es la cantidad de feromonas depositadas
+     * ->> n^β visibilidad o conveniencia del estado de transición (1 / peso de la distancia)
+     */
     private Posicion caminoMasEfectivo(ArrayList<Posicion> celdasDisponibles) {
-        /**
-         * Selección de arista
-         *
-         * p^k = (t^α)(n^β) / Σ(t^α)(n^β)
-         *
-         * ->> t^α es la cantidad de feromonas depositadas
-         * ->> n^β visibilidad o conveniencia del estado de transición (1 / peso de la distancia)
-         */
-
         ArrayList<Double> celdasConFeromonas = new ArrayList<>();
         double sumatoria = 0.0;
 
@@ -195,25 +231,44 @@ public class NidoHormigas extends Nido {
         return null;
     }
 
-    private ArrayList<Posicion> celdasVecinasDisponibles(Posicion p) {
-        int i = p.getFila();
-        int j = p.getColumna();
+    /**
+     * Se calculan las celdas disponibles alredodor de una hormiga. Los 8 ejes en total.
+     * Además, se consideran las celdas ya visitadas dando más prioridad a las que no.
+     * @param h
+     * @return
+     */
+    private ArrayList<Posicion> celdasVecinasDisponibles(Hormiga h) {
+        int i = h.getPosicionActual().getFila();
+        int j = h.getPosicionActual().getColumna();
         int rowLimit = cant_filas - 1;
         int columnLimit = cant_columnas - 1;
         ArrayList<Posicion> celdasDisponibles = new ArrayList<>();
+        ArrayList<Posicion> celdasSinVisitar = new ArrayList<>();
 
         for (int x = Math.max(0, i - 1); x <= Math.min(i + 1, rowLimit); x++) {
             for (int y = Math.max(0, j - 1); y <= Math.min(j + 1, columnLimit); y++) {
                 if (x != i || y != j) {
                     if (C_Inicio.matriz.get(x, y).getTipo_objeto() == Objeto_IU.VACIO) {
                         celdasDisponibles.add(new Posicion(x, y));
+
+                        if (!h.recorriCelda(new Posicion(x, y))) {
+                            celdasSinVisitar.add(new Posicion(x, y));
+                        }
                     }
                 }
             }
         }
+        if (celdasSinVisitar.size() > 0) {
+            return celdasSinVisitar;
+        }
         return celdasDisponibles;
     }
 
+    /**
+     * Acorde a una posición se obtienen las fuentes de alimento disponibles
+     * @param p
+     * @return
+     */
     private ArrayList<Posicion> fuentesAlimentoVecinas(Posicion p) {
         int i = p.getFila();
         int j = p.getColumna();
@@ -238,6 +293,10 @@ public class NidoHormigas extends Nido {
         matrizFeromonas[p.getFila()][p.getColumna()] += h.getFeromonasPercibidas() + feromonaHormiga;
     }
 
+    /**
+     * Método que corre de manera concurrente para asegurar el desvanecimiento de las feromonas que
+     * .. las homigas depositan
+     */
     private void handlerFeromonas() {
         Task task = new Task<Object>() {
             @Override
@@ -258,10 +317,20 @@ public class NidoHormigas extends Nido {
         new Thread(task).start();
     }
 
+    /**
+     * Actualización de una celda con feromonas, según la fórmula:
+     *                  t_ij = (1 - p) * t_ij
+     * .. donde 't_ij' es la cantidad de feromona de la celda y 'p' el nivel de evaporación
+     * @param i
+     * @param j
+     */
     private void actualizarFeromonaCelda(int i,int j) { // t_ij = (1 - p) * t_ij
         matrizFeromonas[i][j] = (1 - evaporacion) * matrizFeromonas[i][j];
     }
 
+    /**
+     * Se da la reproducción de hormigas si el alimento del nido es superior a la capacidad permitida
+     */
     private void reproducirHormigas() {
         // si la cantidad de alimentos recolectados supera el máximo del nido
         // .. agregue una nueva hormiga
@@ -271,6 +340,12 @@ public class NidoHormigas extends Nido {
         }
     }
 
+    /**
+     * Los recursos de alimento no son para siempre, dado un lapso de tiempo, dentro del nido
+     * .. la comida se empezará a agotar
+     * @param tiempo
+     * @return
+     */
     private synchronized boolean consumirAlimentoNido(long tiempo) {
         if ((tiempo >= getDuracion_alimento()) && getAlimentoRecolectado() > 0) {
             super.consumirAlimentoRecolectado(); // le resta 1 a la cantidad de alimentos en nido
