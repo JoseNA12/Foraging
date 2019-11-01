@@ -143,4 +143,12 @@ public class Nido extends Celda {
     public void setReproduccionAgentes(boolean reproduccionAgentes) {
         this.reproduccionAgentes = reproduccionAgentes;
     }
+
+   /* public  void getAgenteEnPosicion(Posicion posicion){
+        for (Agente agente:agentes) {
+            int filaAgente = agente.getPosicion().getFila();
+            int colAgente = agente.getPosicion().getColumna()
+            if (posicion.getFila() ==  && )
+        }
+    }*/
 }

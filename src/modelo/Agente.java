@@ -7,7 +7,8 @@ public class Agente {
     private boolean tieneVida;
     private int vida;
 
-    private Posicion posicion;
+    private Posicion posicionActual;
+    private Posicion posicionNido;
 
 
     public Agente(Posicion posicion, String ID, int cantidad_alimento_recoger, boolean tieneVida, int vida) {
@@ -15,15 +16,15 @@ public class Agente {
         this.cantidad_alimento_recoger = cantidad_alimento_recoger;
         this.tieneVida = tieneVida;
         this.vida = vida;
-        this.posicion = posicion;
+        this.posicionActual = posicion;
     }
 
     public Posicion getPosicionNido() {
-        return posicion;
+        return posicionNido;
     }
 
     public void setPosicionNido(Posicion posicion) {
-        this.posicion = posicion;
+        this.posicionNido = posicion;
     }
 
     public String getID() {
@@ -63,10 +64,10 @@ public class Agente {
     }
 
     public Posicion getPosicion() {
-        return posicion;
+        return posicionActual;
     }
 
     public void setPosicion(Posicion posicion) {
-        this.posicion = posicion;
+        this.posicionActual = posicion;
     }
 }
