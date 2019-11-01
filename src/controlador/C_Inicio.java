@@ -121,7 +121,7 @@ public class C_Inicio {
                 20, integerFilter));
         id_text_tiempo_en_regenerar_alimento.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 30, integerFilter));
-        id_text_lapsos_tiempo_duracion.setText("2");
+        id_text_lapsos_tiempo_duracion.setText("1");
 
         id_check_agentes_morir.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -131,9 +131,9 @@ public class C_Inicio {
         });
 
         id_cant_filas.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                10, integerFilter));
+                20, integerFilter));
         id_cant_columnas.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                10, integerFilter));
+                20, integerFilter));
 
         mi_canvas = new CanvasJuego(id_canvas_juego);
     }

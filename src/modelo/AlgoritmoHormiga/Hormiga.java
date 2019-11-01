@@ -11,7 +11,7 @@ public class Hormiga extends Agente {
     private boolean buscandoComida = true;
     private ArrayList<Posicion> caminoACasa;
     private Posicion cobertura;
-    private int totalCeldasRecorridas = 0;
+    private double feromonasPercibidas = 0;
 
 
     public Hormiga(Posicion posicion, String ID, int cantidad_alimento_recoger, boolean tieneVida, int vida) {
@@ -22,6 +22,7 @@ public class Hormiga extends Agente {
 
     public void recordarPosicion(Posicion posicion) {
         this.caminoACasa.add(posicion);
+        this.feromonasPercibidas += 1;
 
         if (this.cobertura.getFila() < posicion.getFila()) {
             this.cobertura.setFila(posicion.getFila());
@@ -31,31 +32,24 @@ public class Hormiga extends Agente {
         }
     }
 
-    public void clearCaminoACasa() {
-        this.caminoACasa.clear();
-    }
-
     public boolean isBuscandoComida() {
         return buscandoComida;
     }
 
-    public void setBuscandoComida(boolean buscadoComida) {
-        this.buscandoComida = buscadoComida;
+    public void setBuscandoComida(boolean buscandoComida) {
+        this.buscandoComida = buscandoComida;
 
-        if (buscadoComida) {
+        if (this.buscandoComida) {
             this.cobertura = super.getPosicionNido();
             this.caminoACasa = new ArrayList<>();
+            this.feromonasPercibidas = 0;
         }
         else {
+            // algoritmo de optimización, retorna la mejor ruta para el nido de la hormiga
             BreadthFirstSearch e = new BreadthFirstSearch(cobertura.getFila(), cobertura.getColumna());
-            /*System.out.println("JUEP/RA");
-            for (Posicion i: this.caminoACasa) {
-                System.out.println(i);
-            }*/
             ArrayList<Posicion> a = e.init(this.caminoACasa);
             if (a != null) {
                 this.caminoACasa = a;
-                this.totalCeldasRecorridas = 0;
             }
             else {
                 System.out.println(super.getID() + ": Me perdí, no se donde esta mi nido :(");
@@ -83,12 +77,16 @@ public class Hormiga extends Agente {
         this.cobertura = cobertura;
     }
 
-    public int getTotalCeldasRecorridas() {
-        return totalCeldasRecorridas;
+    public double getFeromonasPercibidas() {
+        return feromonasPercibidas;
     }
 
-    public void setTotalCeldasRecorridas(int totalCeldasRecorridas) {
-        this.totalCeldasRecorridas = totalCeldasRecorridas;
+    public void addFeromonasPercibidas(double feromonasPercibidas) {
+        this.feromonasPercibidas += feromonasPercibidas;
+    }
+
+    public void setFeromonasPercibidas(double feromonasPercibidas) {
+        this.feromonasPercibidas = feromonasPercibidas;
     }
 
     public String toString() {

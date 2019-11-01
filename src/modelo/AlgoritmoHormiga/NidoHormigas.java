@@ -19,21 +19,21 @@ import static controlador.C_Inicio.*;
 public class NidoHormigas extends Nido {
 
     private double feromonaHormiga = 500;
+    private double feromonaInicial = 0.1;
     private double evaporacion = 0.5; // entre mas bajo este valor, más feronomonas restantes
     private final double visibilidad = 3.1;
     private final double alpha = 1; // importancia de feromona
     private final double beta = 5;  // prioridad de distancia
-    private final double feromonaInicial = 0.1;
 
     private Random random = new Random();
 
-    private double matriz[][];
+    private double matrizFeromonas[][];
 
 
     public NidoHormigas(Celda pCelda, int ID, int capacidad_maxima_alimento, int capacidad_minima_alimento, int duracion_alimento, int cantidad_agentes, boolean pTienenVida, int pCantidaAlimentoRecoger, int pCantidadVida, boolean pReproduccionAgentes) {
         super(pCelda, ID, capacidad_maxima_alimento, capacidad_minima_alimento, duracion_alimento, cantidad_agentes, pTienenVida, pCantidaAlimentoRecoger, pCantidadVida, pReproduccionAgentes);
 
-        matriz = generarMatriz();
+        matrizFeromonas = generarMatrizFeromonas();
         crearEnjambre();
         iniciar();
     }
@@ -49,7 +49,7 @@ public class NidoHormigas extends Nido {
         return new Hormiga(super.getPosicion(), id, super.getCantidadAlimentoRecoger(), super.isTienenVida(), super.getCantidadVida());
     }
 
-    private double[][] generarMatriz() {
+    private double[][] generarMatrizFeromonas() {
         double[][] randomMatrix = new double[cant_filas][cant_columnas];
 
         for(int i = 0; i < cant_filas; i++) {
@@ -66,6 +66,7 @@ public class NidoHormigas extends Nido {
             protected Object call() throws Exception {
 
                 long inicio = System.currentTimeMillis();
+                handlerFeromonas(); // se encarga de actualizar las feromonas de las matriz
 
                 while (juego_activo) {
                     for (Agente h: getAgentes()) {
@@ -103,11 +104,6 @@ public class NidoHormigas extends Nido {
     private void buscarComida(Hormiga h) {
         ArrayList<Posicion> fuentesAlimentoDisponibles = fuentesAlimentoVecinas(h.getPosicionActual());
 
-        /*String var = "";
-        for (Posicion i: celdasDisponibles) {
-            var += ("(" + i.getFila() + ", " + i.getColumna() + "), ");
-        } System.out.println("Celdas Disponibles: " + var);*/
-
         if (fuentesAlimentoDisponibles.size() > 0) { // existe una fuente de alimento a su alrededor. Disponible y con cantidad > 0
             Random randomGenerator = new Random();
             int randomInt = randomGenerator.nextInt(fuentesAlimentoDisponibles.size()); // si hay varias escoja 1 al azar
@@ -129,6 +125,10 @@ public class NidoHormigas extends Nido {
                 if (pudoPonerAgente) {
                     h.setPosicionActual(p);
                     h.recordarPosicion(p);
+
+                    if (matrizFeromonas[p.getFila()][p.getFila()] > 0) { // Q/C^k (if component(i, j) was used by ant)
+                        h.addFeromonasPercibidas(feromonaHormiga / super.getCantidad_agentes());
+                    }
                 }
             }
         }
@@ -144,6 +144,7 @@ public class NidoHormigas extends Nido {
             if (pudoPonerAgente) {
                 h.setPosicionActual(caminoNido.get(0));
                 h.removeCeldaCaminoCasa(0); // remover de caminoNido la ubicacion utilizada
+                depositarFeromonas(h, h.getPosicionActual());
             }
         }
         else {
@@ -168,7 +169,7 @@ public class NidoHormigas extends Nido {
         double sumatoria = 0.0;
 
         for (Posicion i: celdasDisponibles) {
-            double t = Math.pow(matriz[i.getFila()][i.getColumna()], alpha);
+            double t = Math.pow(matrizFeromonas[i.getFila()][i.getColumna()], alpha);
             double n = Math.pow(1 / visibilidad, beta);
             double tn = t * n;  // (t^α)(n^β)
             celdasConFeromonas.add(tn);
@@ -233,8 +234,32 @@ public class NidoHormigas extends Nido {
         return celdasDisponibles;
     }
 
-    private void actualizarFeromonaCelda(Posicion p) {
-        matriz[p.getFila()][p.getColumna()] = (1 - evaporacion) * matriz[p.getFila()][p.getColumna()];
+    private void depositarFeromonas(Hormiga h, Posicion p) {
+        matrizFeromonas[p.getFila()][p.getColumna()] += h.getFeromonasPercibidas() + feromonaHormiga;
+    }
+
+    private void handlerFeromonas() {
+        Task task = new Task<Object>() {
+            @Override
+            protected Object call() throws Exception {
+
+                while (juego_activo) {
+                    for (int i = 0; i < matrizFeromonas.length; i++) {
+                        for (int j = 0; j < matrizFeromonas[0].length; j++) {
+                            actualizarFeromonaCelda(i, j);
+                        }
+                    }
+                    Thread.sleep((long) lapsos_tiempo_ejecucion);
+                }
+                return null;
+            }
+        };
+
+        new Thread(task).start();
+    }
+
+    private void actualizarFeromonaCelda(int i,int j) { // t_ij = (1 - p) * t_ij
+        matrizFeromonas[i][j] = (1 - evaporacion) * matrizFeromonas[i][j];
     }
 
     private void reproducirHormigas() {
