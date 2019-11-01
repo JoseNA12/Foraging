@@ -1,5 +1,6 @@
 package modelo;
 
+import javafx.scene.image.Image;
 import modelo.otros.Celda;
 import modelo.otros.Objeto_IU;
 
@@ -59,11 +60,11 @@ public class Matriz_grafo {
     }
 
     // p1: nueva posicion   |   p2: posicion anterior
-    public synchronized boolean setAgenteCasilla(Posicion p1, Posicion p2) {
+    public synchronized boolean setAgenteCasilla(Image img, Posicion p1, Posicion p2) {
         if (get(p1.getFila(), p1.getColumna()).getTipo_objeto() == Objeto_IU.VACIO) {
             get(p1.getFila(), p1.getColumna()).setTipo_objeto(Objeto_IU.AGENTE);
 
-            mi_canvas.dibujar_canvas(mi_canvas.getImg_agente(), p1.getFila(), p1.getColumna());
+            mi_canvas.dibujar_canvas(img, p1.getFila(), p1.getColumna());
 
             if (!isNido(p2.getFila(), p2.getColumna())) { // evitar conflictos al inicio del spam
                 get(p2.getFila(), p2.getColumna()).setTipo_objeto(Objeto_IU.VACIO);

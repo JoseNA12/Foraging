@@ -27,4 +27,12 @@ public class Posicion {
     public void setColumna(int columna) {
         this.columna = columna;
     }
+
+    public boolean mismasPosiciones(Posicion p) {
+        return (this.fila == p.getFila() && this.columna == p.getColumna());
+    }
+
+    public String toString() {
+        return "(" + this.fila + ", " + this.columna + ")";
+    }
 }

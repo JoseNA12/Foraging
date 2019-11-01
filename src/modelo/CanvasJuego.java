@@ -22,7 +22,7 @@ public class CanvasJuego {
     private Image img_nido;
     private Image img_fuente_alimento;
     private Image img_fuente_alimento_no_disp;
-    private Image img_agente;
+    private Image img_agente_1, img_agente_alimento_1;
 
 
     public CanvasJuego(Canvas canvas) {
@@ -32,7 +32,8 @@ public class CanvasJuego {
         img_nido = new Image(getClass().getResourceAsStream(Path_Imagenes.NIDO.getContenido()));
         img_fuente_alimento = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO.getContenido()));
         img_fuente_alimento_no_disp = new Image(getClass().getResourceAsStream(Path_Imagenes.ALIMENTO_NO_DISP.getContenido()));
-        img_agente = new Image(getClass().getResourceAsStream(Path_Imagenes.AGENTE.getContenido()));
+        img_agente_1 = new Image(getClass().getResourceAsStream(Path_Imagenes.AGENTE.getContenido()));
+        img_agente_alimento_1 = new Image(getClass().getResourceAsStream(Path_Imagenes.AGENTE_ALIMENTO.getContenido()));
     }
 
     public synchronized void dibujar_canvas(Image pImagen, int x, int y) {
@@ -79,10 +80,18 @@ public class CanvasJuego {
     }
 
     public Image getImg_agente() {
-        return img_agente;
+        return img_agente_1;
     }
 
     public void setImg_agente(Image img_agente) {
-        this.img_agente = img_agente;
+        this.img_agente_1 = img_agente;
+    }
+
+    public Image getImg_agente_alimento_1() {
+        return img_agente_alimento_1;
+    }
+
+    public void setImg_agente_alimento_1(Image img_agente_alimento_1) {
+        this.img_agente_alimento_1 = img_agente_alimento_1;
     }
 }

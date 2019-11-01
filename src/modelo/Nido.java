@@ -92,6 +92,10 @@ public class Nido extends Celda {
         this.alimentoRecolectado = alimentoRecolectado;
     }
 
+    public synchronized void depositarAlimentoRecolectado(int alimentoRecolectado) {
+        this.alimentoRecolectado += alimentoRecolectado;
+    }
+
     public void consumirAlimentoRecolectado() {
         this.alimentoRecolectado -= 1;
     }

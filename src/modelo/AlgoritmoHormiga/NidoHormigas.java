@@ -19,7 +19,7 @@ import static controlador.C_Inicio.*;
 public class NidoHormigas extends Nido {
 
     private double feromonaHormiga = 500;
-    private double evaporacion = 0.5;
+    private double evaporacion = 0.5; // entre mas bajo este valor, más feronomonas restantes
     private final double visibilidad = 3.1;
     private final double alpha = 1; // importancia de feromona
     private final double beta = 5;  // prioridad de distancia
@@ -40,13 +40,13 @@ public class NidoHormigas extends Nido {
 
     public void crearEnjambre() {
         for (int i = 0; i < getCantidad_agentes(); i++) {
-            String id = getID() + "_Hormiga_Agente_" + i;
+            String id = super.getID() + "_Hormiga_Agente_" + i;
             addAgente(crearHormiga(id));
         }
     }
 
     private Hormiga crearHormiga(String id) {
-        return new Hormiga(getPosicion(), id, getCantidadAlimentoRecoger(), isTienenVida(), getCantidadVida());
+        return new Hormiga(super.getPosicion(), id, super.getCantidadAlimentoRecoger(), super.isTienenVida(), super.getCantidadVida());
     }
 
     private double[][] generarMatriz() {
@@ -85,10 +85,9 @@ public class NidoHormigas extends Nido {
                             }
                         }
                     }
-
                     reproducirHormigas();
 
-                    long diferencia = System.currentTimeMillis()-inicio;
+                    long diferencia = System.currentTimeMillis() - inicio;
                     if (consumirAlimentoNido(diferencia)) {
                         inicio = System.currentTimeMillis();
                     }
@@ -101,17 +100,17 @@ public class NidoHormigas extends Nido {
         new Thread(task).start();
     }
 
-    private void irANido(Hormiga h) {
-        actualizarFeromonaCelda(h.getPosicionActual());
-    }
-
     private void buscarComida(Hormiga h) {
-        ArrayList<Posicion> celdasDisponibles = celdasVecinasDisponibles(h.getPosicionActual());
         ArrayList<Posicion> fuentesAlimentoDisponibles = fuentesAlimentoVecinas(h.getPosicionActual());
+
+        /*String var = "";
+        for (Posicion i: celdasDisponibles) {
+            var += ("(" + i.getFila() + ", " + i.getColumna() + "), ");
+        } System.out.println("Celdas Disponibles: " + var);*/
 
         if (fuentesAlimentoDisponibles.size() > 0) { // existe una fuente de alimento a su alrededor. Disponible y con cantidad > 0
             Random randomGenerator = new Random();
-            int randomInt = randomGenerator.nextInt(fuentesAlimentoDisponibles.size()) + 1; // si hay varias escoja 1 al azar
+            int randomInt = randomGenerator.nextInt(fuentesAlimentoDisponibles.size()); // si hay varias escoja 1 al azar
             Posicion p = fuentesAlimentoDisponibles.get(randomInt);
 
             FuenteAlimento fa = ((FuenteAlimento) C_Inicio.matriz.get(p.getFila(), p.getColumna())); // obtengo el recurso
@@ -119,10 +118,11 @@ public class NidoHormigas extends Nido {
             h.setBuscandoComida(false);
         }
         else {
-            Posicion p = caminoMasEfectivo(celdasDisponibles, h);
+            ArrayList<Posicion> celdasDisponibles = celdasVecinasDisponibles(h.getPosicionActual());
+            Posicion p = caminoMasEfectivo(celdasDisponibles);
 
             if (p != null) {
-                boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(p, h.getPosicionActual());
+                boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente(), p, h.getPosicionActual());
 
                 // al ser un metodo que toodo mundo usa (y es synchronized), prefiero asegurar
                 // .. que el agente si se pudo poner en la matriz general de juego
@@ -134,7 +134,27 @@ public class NidoHormigas extends Nido {
         }
     }
 
-    private Posicion caminoMasEfectivo(ArrayList<Posicion> celdasDisponibles, Hormiga h) {
+    private void irANido(Hormiga h) {
+        ArrayList<Posicion> caminoNido = h.getCaminoACasa();
+
+        if (caminoNido.size() > 0) {
+            //actualizarFeromonaCelda(h.getPosicionActual());
+            boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_alimento_1(), caminoNido.get(0), h.getPosicionActual());
+
+            if (pudoPonerAgente) {
+                h.setPosicionActual(caminoNido.get(0));
+                h.removeCeldaCaminoCasa(0); // remover de caminoNido la ubicacion utilizada
+            }
+        }
+        else {
+            super.depositarAlimentoRecolectado(h.getCantidad_alimento_encontrado());
+            h.setCantidad_alimento_encontrado(0);
+            h.setBuscandoComida(true);
+            h.recordarPosicion(h.getPosicionActual());
+        }
+    }
+
+    private Posicion caminoMasEfectivo(ArrayList<Posicion> celdasDisponibles) {
         /**
          * Selección de arista
          *
@@ -226,7 +246,7 @@ public class NidoHormigas extends Nido {
         }
     }
 
-    private boolean consumirAlimentoNido(long tiempo) {
+    private synchronized boolean consumirAlimentoNido(long tiempo) {
         if ((tiempo >= getDuracion_alimento()) && getAlimentoRecolectado() > 0) {
             super.consumirAlimentoRecolectado(); // le resta 1 a la cantidad de alimentos en nido
             return true;
