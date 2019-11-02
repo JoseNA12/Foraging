@@ -79,57 +79,57 @@ public class NidoHormigas extends Nido {
     private void iniciar() {
         Task task = new Task<Object>() {
             @Override
-            protected Object call() throws Exception {
+            protected Object call() {
+                try {
+                    long inicio = System.currentTimeMillis();
+                    handlerFeromonas(); // se encarga de actualizar las feromonas de las matriz
 
-                long inicio = System.currentTimeMillis();
-                handlerFeromonas(); // se encarga de actualizar las feromonas de las matriz
-
-                while (juego_activo) {
-                    if (getAlimentoRecolectado() < getCapacidad_minima_alimento()) {
-                        despertarAgente();
-                    }
-
-                    for (int i = 0; i < getAgentes().size(); i++) {
-                        Hormiga h_ = (Hormiga) getAgentes().get(i);
-
-                        if (h_.isBuscandoComida()) {
-                            // bitacora
-                            long tiempo_buscando_inicio = System.currentTimeMillis();
-                            // --------------
-
-                            buscarComida(h_);
-
-                            // bitacora
-                            h_.addBITACORA_tiempo_de_busqueda(tiempo_buscando_inicio);
-                            // --------------
-                        }
-                        else {
-                            irANido(h_);
+                    while (juego_activo) {
+                        if (getAlimentoRecolectado() < getCapacidad_minima_alimento()) {
+                            despertarAgente();
                         }
 
-                        // bitacora
-                        h_.addBITACORA_distancia_total_recorrida(1);
-                        // --------------
+                        for (int i = 0; i < getAgentes().size(); i++) {
+                            Hormiga h_ = (Hormiga) getAgentes().get(i);
 
-                        if (isTienenVida()) {
-                            h_.restarVida(1);
-                            if (h_.getVida() < 0) {
-                                eliminarAgenteNido(h_);
+                            if (h_.isBuscandoComida()) {
+                                long tiempo_buscando_inicio = System.currentTimeMillis(); // bitacora
+
+                                buscarComida(h_);
+
+                                h_.addBITACORA_tiempo_de_busqueda(tiempo_buscando_inicio); // bitacora
+                            } else {
+                                irANido(h_);
+                            }
+                            h_.addBITACORA_distancia_total_recorrida(1); // bitacora
+
+                            if (isTienenVida()) {
+                                h_.restarVida(1);
+                                if (h_.getVida() < 0) {
+                                    eliminarAgenteNido(h_);
+                                }
                             }
                         }
-                    }
-                    if (isReproduccionAgentes()) {
-                        reproducirHormigas();
-                    }
+                        if (isReproduccionAgentes()) {
+                            reproducirHormigas();
+                        }
 
-                    long diferencia = System.currentTimeMillis() - inicio;
-                    if (consumirAlimentoNido(diferencia)) {
-                        inicio = System.currentTimeMillis();
-                    }
+                        long diferencia = System.currentTimeMillis() - inicio;
+                        if (consumirAlimentoNido(diferencia)) {
+                            inicio = System.currentTimeMillis();
+                        }
 
-                    Thread.sleep((long) lapsos_tiempo_ejecucion);
+                        try {
+                            Thread.sleep((long) lapsos_tiempo_ejecucion);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    escribirEnBitacora();
                 }
-                escribirEnBitacora();
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         };
@@ -194,8 +194,15 @@ public class NidoHormigas extends Nido {
         depositarFeromonas(h, h.getPosicionActual());
 
         ArrayList<Posicion> caminoNido = h.getCaminoACasa();
-        if (caminoNido.size() > 0) {
-            //actualizarFeromonaCelda(h.getPosicionActual());
+
+        System.out.print("caminoNido: ");
+        for (int i = 0; i < caminoNido.size(); i++) {
+            System.out.print("(" + caminoNido.get(i).getFila() + ", " + caminoNido.get(i).getColumna() + ")");
+        }
+        System.out.println("\nposActual: (" + h.getPosicionActual().getFila() + ", " + h.getPosicionActual().getColumna() + ")");
+
+
+        if (caminoNido.size() > 0) { System.out.println("    Objecto_IU: " + C_Inicio.matriz.get(caminoNido.get(0).getFila(), caminoNido.get(0).getColumna()).getTipo_objeto());
             boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_alimento_1(), caminoNido.get(0), h.getPosicionActual());
 
             if (pudoPonerAgente) {
@@ -228,8 +235,8 @@ public class NidoHormigas extends Nido {
         ArrayList<Double> celdasConFeromonas = new ArrayList<>();
         double sumatoria = 0.0;
 
-        for (Posicion i: celdasDisponibles) {
-            double t = Math.pow(matrizFeromonas[i.getFila()][i.getColumna()], alpha);
+        for (int i = 0; i < celdasDisponibles.size(); i++) {
+            double t = Math.pow(matrizFeromonas[celdasDisponibles.get(i).getFila()][celdasDisponibles.get(i).getColumna()], alpha);
             double n = Math.pow(1 / visibilidad, beta);
             double tn = t * n;  // (t^α)(n^β)
             celdasConFeromonas.add(tn);
@@ -237,8 +244,8 @@ public class NidoHormigas extends Nido {
         }
 
         ArrayList<Double> probabilidadCeldas = new ArrayList<>();
-        for (Double i: celdasConFeromonas) {
-            probabilidadCeldas.add(i / sumatoria); // p^k = (t^α)(n^β) / Σ(t^α)(n^β)
+        for (int i = 0; i < celdasConFeromonas.size(); i++) {
+            probabilidadCeldas.add(celdasConFeromonas.get(i) / sumatoria); // p^k = (t^α)(n^β) / Σ(t^α)(n^β)
         }
 
         double r = random.nextDouble();

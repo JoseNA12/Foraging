@@ -110,7 +110,7 @@ public class C_Inicio {
 
         // validaciones para que los inputs solo acepten valores numericos
         id_text_cantidad_agentes_x_nido.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                5, integerFilter));
+                3, integerFilter));
         id_text_cantidad_alimento_recoger.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 3, integerFilter));
         id_text_vida_agentes.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
@@ -135,9 +135,9 @@ public class C_Inicio {
         });
 
         id_cant_filas.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                20, integerFilter));
+                10, integerFilter));
         id_cant_columnas.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                20, integerFilter));
+                10, integerFilter));
 
         mi_canvas = new CanvasJuego(id_canvas_juego);
     }

@@ -69,7 +69,7 @@ public class Matriz_grafo {
             mi_canvas.dibujar_canvas(img, p1.getFila(), p1.getColumna());
 
             if (!isNido(p2.getFila(), p2.getColumna())) { // evitar conflictos al inicio del spam
-              limpirCelda(p2);
+                limpirCelda(p2);
             }
             return true;
         }
