@@ -25,6 +25,7 @@ public class AgenteFiducial extends Agente{
         super(posicionNido, ID, cantidad_alimento_recoger, tieneVida, vida);
         this.cobertura = posicionNido;
         this.pasosRealizados = new HashSet<>();
+        this.caminoACasa = new ArrayList<>();
     }
 
     public int getCantidad_alimento_encontrado() {

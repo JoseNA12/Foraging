@@ -2,13 +2,18 @@ package modelo;
 
 import controlador.C_Inicio;
 import javafx.concurrent.Task;
+import javafx.geometry.Pos;
+import modelo.Agente;
+import modelo.FuenteAlimento;
+import modelo.Nido;
+import modelo.Posicion;
 import modelo.otros.Celda;
 import modelo.otros.Objeto_IU;
-import modelo.FuenteAlimento;
+
 import java.util.ArrayList;
 import java.util.Random;
+
 import static controlador.C_Inicio.*;
-import static controlador.C_Inicio.mi_canvas;
 
 public class NidoFiducial extends Nido{
 
@@ -33,20 +38,47 @@ public class NidoFiducial extends Nido{
         Task task = new Task<Object>() {
             @Override
             protected Object call() throws Exception {
-                long inicio = System.currentTimeMillis();
-                while (juego_activo) {
-                    for (int i = 0; i < getAgentes().size(); i++) {
-                        AgenteFiducial agente = (AgenteFiducial) getAgentes().get(i);
-                        if (agente.isBuscandoComida()) {
-                            moverAgente(agente);
+                try {
+                    long inicio = System.currentTimeMillis();
+                    while (juego_activo) {
+                        if (getAlimentoRecolectado() < getCapacidad_minima_alimento()) {
+                            despertarAgente();
                         }
-                        else {
-                            irANido(agente);
-                        }
-                    }
 
-                    long diferencia = System.currentTimeMillis() - inicio;
-                    Thread.sleep((long) lapsos_tiempo_ejecucion);
+                        for (int i = 0; i < getAgentes().size(); i++) {
+                            AgenteFiducial agente = (AgenteFiducial) getAgentes().get(i);
+                            if (agente.isBuscandoComida()) {
+                                long tiempo_buscando_inicio = System.currentTimeMillis(); // bitacora
+                                moverAgente(agente);
+                                agente.addBITACORA_tiempo_de_busqueda(tiempo_buscando_inicio); // bitacora
+                            }
+                            else {
+                                irANido(agente);
+                            }
+                            agente.addBITACORA_distancia_total_recorrida(1); // bitacora
+                            if (isTienenVida()) {
+                                agente.restarVida(1);
+                                if (agente.getVida() < 0) {
+                                    eliminarAgenteNido(agente);
+                                }
+                            }
+                        }
+
+                        long diferencia = System.currentTimeMillis() - inicio;
+                        if (consumirAlimentoNido(diferencia)) {
+                            inicio = System.currentTimeMillis();
+                        }
+                        try {
+                            Thread.sleep((long) lapsos_tiempo_ejecucion);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    escribirEnBitacora();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
                 return null;
             }
@@ -55,13 +87,22 @@ public class NidoFiducial extends Nido{
     }
 
     private void irANido(AgenteFiducial agente){
-        System.out.println("Nido");
         ArrayList<Posicion> caminoNido = agente.getCaminoACasa();
         if (caminoNido.size() > 0) {
             boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_alimento_1(), caminoNido.get(0),agente.getPosicionActual());
             if (pudoPonerAgente) {
                 agente.setPosicionActual(caminoNido.get(0));
                 agente.removeCeldaCaminoCasa(0); // remover de caminoNido la ubicacion utilizada
+            }
+        }
+        else {
+            depositarAlimentoRecolectado(agente.getCantidad_alimento_encontrado());
+            agente.setCantidad_alimento_encontrado(0);
+            agente.setBuscandoComida(true);
+            agente.recordarPosicion(agente.getPosicionActual());
+
+            if (getAlimentoRecolectado() > getCapacidad_minima_alimento()) {
+                dormirAgente(agente);
             }
         }
     }
@@ -78,25 +119,18 @@ public class NidoFiducial extends Nido{
             Posicion p = celdasAlimento.get(randomInt);
             int fila = p.getFila();
             int col = p.getColumna();
-            FuenteAlimento fa = null; // obtengo el recurso
-            System.out.println("1");
-            try {
-                fa = (FuenteAlimento) C_Inicio.matriz.get(fila, col);
-            }catch(Exception e){
-                System.out.println(e);
-            }
-            System.out.println("2");
+            FuenteAlimento fa = (FuenteAlimento) C_Inicio.matriz.get(fila, col);
             agente.setCantidad_alimento_encontrado(fa.consumirAlimento(agente.getCantidad_alimento_recoger()));
-            System.out.println("3");
             agente.setBuscandoComida(false);
-            System.out.println("Set as false");
+            agente.addBITACORA_cantidad_alimento_transportado(agente.getCantidad_alimento_encontrado());
         }
         else{
-            Posicion p = caminoMasEfectivo(celdasDisponibles, celdasAgentesVecinos, pos);
+            Posicion p = caminoMasEfectivo(celdasDisponibles, celdasAgentesVecinos, agente);
             if (p != null) {
                 boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente(), p, agente.getPosicionActual());
                 if (pudoPonerAgente) {
                     agente.setPosicionActual(p);
+                    agente.recordarPosicion(p);
                 }
             }
         }
@@ -129,15 +163,15 @@ public class NidoFiducial extends Nido{
         return new Object[]{celdasDisponibles, celdasAgentes, celdasAlimento};
     }
 
-    private Posicion caminoMasEfectivo(ArrayList<Posicion> celdasDisponibles, ArrayList<Posicion> celdasAgentes, Posicion posAgente) {
-        Posicion posNueva;
+    private Posicion caminoMasEfectivo(ArrayList<Posicion> celdasDisponibles, ArrayList<Posicion> celdasAgentes, AgenteFiducial agente) {
+        Posicion posNueva, posAgente = agente.getPosicionActual();
         for(Posicion posAgenteVecino : celdasAgentes){
             posNueva = this.calcularPosicionContraria(posAgente, posAgenteVecino);
             if (this.comprobarCeldaDisponible(celdasDisponibles, posNueva.getFila(), posNueva.getColumna()))
                 return posNueva;
         }
         posNueva = this.desplazamientoAleatorio(posAgente);
-        return (this.comprobarCeldaDisponible(celdasDisponibles, posNueva.getFila(), posNueva.getColumna())) ? posNueva : null;
+        return (this.comprobarCeldaDisponible(celdasDisponibles, posNueva.getFila(), posNueva.getColumna()) ) ? posNueva : null;
     }
 
     private Posicion desplazamientoAleatorio(Posicion posAgente){
@@ -146,6 +180,7 @@ public class NidoFiducial extends Nido{
         int desplazamientoColumna = r.nextInt(2 + 1) - 1;
         return new Posicion(posAgente.getFila()+desplazamientoFila, posAgente.getColumna()+desplazamientoColumna);
     }
+
     private Posicion calcularPosicionContraria(Posicion posAgente, Posicion posAgenteVecino){
         int filaAgenteContraria = posAgente.getFila() - posAgenteVecino.getFila() + 1;
         int colAgenteContraria = posAgente.getColumna() - posAgenteVecino.getColumna() + 1;
@@ -156,6 +191,29 @@ public class NidoFiducial extends Nido{
         for(Posicion pos : celdasDisponibles){
             if((fila == pos.getFila()) && (columna == pos.getColumna()))
                 return true;
+        }
+        return false;
+    }
+
+    private boolean esMovimientoRepetido(AgenteFiducial agenteFiducial, Posicion agentePosicion){
+        for(Posicion pos: agenteFiducial.getCaminoACasa()){
+            if(pos.getFila() == agentePosicion.getFila() && pos.getColumna() == agentePosicion.getColumna()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Los recursos de alimento no son para siempre, dado un lapso de tiempo, dentro del nido
+     * .. la comida se empezará a agotar
+     * @param tiempo
+     * @return
+     */
+    private synchronized boolean consumirAlimentoNido(long tiempo) {
+        if ((tiempo >= getDuracion_alimento()) && getAlimentoRecolectado() > 0) {
+            super.consumirAlimentoRecolectado(); // le resta 1 a la cantidad de alimentos en nido
+            return true;
         }
         return false;
     }

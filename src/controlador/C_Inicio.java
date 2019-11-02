@@ -406,6 +406,7 @@ public class C_Inicio {
             enjambre_enum = enjambresUsados.get(0);
         }
         Nido nido = null;
+        enjambre_enum = TipoEnjambre.FIDUCIAL;
         switch (enjambre_enum) {
             case HORMIGA:
                 nido = new NidoHormigas(

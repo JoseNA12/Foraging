@@ -124,3 +124,179 @@ Fuentes de Alimento:
 
 
 
+******************************************************************************************************
+*************************************** Bitacora de ejecución ****************************************
+******************************************************************************************************
+- Fecha: 2019/11/02 03:22:37
+
+---------- Parámetros de configuración ----------
+
+Tamaño del mapa: (10 x 10)
+
+Agentes: 
+ - Cantidad por enjambre/nido: 3
+ - Cantidad de alimento a recoger x agente: 3
+ - ¿Los agentes pueden morir?: false
+ - Vida: 120
+ - ¿Reproducción de agentes?: false
+
+Nidos: 
+ - Capacidad máxima de alimento en nido: 20
+ - Capacidad mínima de alimento en nido: 5
+ - Duración de alimentos en nido: 15 segundo(s)
+
+Fuentes de Alimento: 
+ - Cantidad disponible por ubicación: 20
+ - Tiempo en regenerar: 30 segundo(s)
+
+---------- Datos de ejecución ----------
+
+7_Nido_
+ - ID: 7_Nido__Fiducial Agente_0
+      Tiempo de busqueda: 11.908 segundo(s)
+      Distancia recorrida: 7
+      Alimento transportado: 6
+ - ID: 7_Nido__Fiducial Agente_2
+      Tiempo de busqueda: 11.913 segundo(s)
+      Distancia recorrida: 12
+      Alimento transportado: 3
+ - ID: 7_Nido__Fiducial Agente_1
+      Tiempo de busqueda: 8.411 segundo(s)
+      Distancia recorrida: 17
+      Alimento transportado: 3
+
+
+
+
+******************************************************************************************************
+*************************************** Bitacora de ejecución ****************************************
+******************************************************************************************************
+- Fecha: 2019/11/02 03:47:46
+
+---------- Parámetros de configuración ----------
+
+Tamaño del mapa: (10 x 10)
+
+Agentes: 
+ - Cantidad por enjambre/nido: 3
+ - Cantidad de alimento a recoger x agente: 3
+ - ¿Los agentes pueden morir?: false
+ - Vida: 120
+ - ¿Reproducción de agentes?: false
+
+Nidos: 
+ - Capacidad máxima de alimento en nido: 20
+ - Capacidad mínima de alimento en nido: 5
+ - Duración de alimentos en nido: 15 segundo(s)
+
+Fuentes de Alimento: 
+ - Cantidad disponible por ubicación: 20
+ - Tiempo en regenerar: 30 segundo(s)
+
+---------- Datos de ejecución ----------
+
+5_Nido_
+ - ID: 5_Nido__Fiducial Agente_2
+      Tiempo de busqueda: 27.324 segundo(s)
+      Distancia recorrida: 11
+      Alimento transportado: 6
+ - ID: 5_Nido__Fiducial Agente_1
+      Tiempo de busqueda: 19.616 segundo(s)
+      Distancia recorrida: 34
+      Alimento transportado: 3
+ - ID: 5_Nido__Fiducial Agente_0
+      Tiempo de busqueda: 16.819 segundo(s)
+      Distancia recorrida: 40
+      Alimento transportado: 3
+
+
+
+
+******************************************************************************************************
+*************************************** Bitacora de ejecución ****************************************
+******************************************************************************************************
+- Fecha: 2019/11/02 03:48:26
+
+---------- Parámetros de configuración ----------
+
+Tamaño del mapa: (10 x 10)
+
+Agentes: 
+ - Cantidad por enjambre/nido: 3
+ - Cantidad de alimento a recoger x agente: 3
+ - ¿Los agentes pueden morir?: false
+ - Vida: 120
+ - ¿Reproducción de agentes?: false
+
+Nidos: 
+ - Capacidad máxima de alimento en nido: 20
+ - Capacidad mínima de alimento en nido: 5
+ - Duración de alimentos en nido: 15 segundo(s)
+
+Fuentes de Alimento: 
+ - Cantidad disponible por ubicación: 20
+ - Tiempo en regenerar: 30 segundo(s)
+
+---------- Datos de ejecución ----------
+
+5_Nido_
+ - ID: 5_Nido__Fiducial Agente_0
+      Tiempo de busqueda: 1.57268813E9 segundo(s)
+      Distancia recorrida: 52
+      Alimento transportado: 3
+ - ID: 5_Nido__Fiducial Agente_1
+      Tiempo de busqueda: 1.57268813E9 segundo(s)
+      Distancia recorrida: 52
+      Alimento transportado: 3
+ - ID: 5_Nido__Fiducial Agente_2
+      Tiempo de busqueda: 1.57268813E9 segundo(s)
+      Distancia recorrida: 52
+      Alimento transportado: 0
+
+
+
+
+******************************************************************************************************
+*************************************** Bitacora de ejecución ****************************************
+******************************************************************************************************
+- Fecha: 2019/11/02 10:23:56
+
+---------- Parámetros de configuración ----------
+
+Tamaño del mapa: (10 x 10)
+
+Agentes: 
+ - Cantidad por enjambre/nido: 3
+ - Cantidad de alimento a recoger x agente: 3
+ - ¿Los agentes pueden morir?: false
+ - Vida: 120
+ - ¿Reproducción de agentes?: false
+
+Nidos: 
+ - Capacidad máxima de alimento en nido: 20
+ - Capacidad mínima de alimento en nido: 5
+ - Duración de alimentos en nido: 15 segundo(s)
+
+Fuentes de Alimento: 
+ - Cantidad disponible por ubicación: 20
+ - Tiempo en regenerar: 30 segundo(s)
+
+---------- Datos de ejecución ----------
+
+4_Nido_
+ - ID: 4_Nido__Fiducial Agente_0
+      Tiempo de busqueda: 1.57271194E9 segundo(s)
+      Distancia recorrida: 242
+      Alimento transportado: 6
+ - ID: 4_Nido__Fiducial Agente_1
+      Tiempo de busqueda: 82.661 segundo(s)
+      Distancia recorrida: 242
+      Alimento transportado: 3
+ - ID: 4_Nido__Fiducial Agente_2
+      Tiempo de busqueda: 74.238 segundo(s)
+      Distancia recorrida: 215
+      Alimento transportado: 3
+
+
+
+
