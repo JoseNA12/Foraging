@@ -412,7 +412,7 @@ public class C_Inicio {
             enjambre_enum = enjambresUsados.get(0);
         }
         Nido nido = null;
-        enjambre_enum = TipoEnjambre.FIDUCIAL;
+        enjambre_enum = TipoEnjambre.HORMIGA;
         switch (enjambre_enum) {
             case HORMIGA:
                 System.out.println("Hormiga");

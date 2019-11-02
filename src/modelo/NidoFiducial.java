@@ -4,10 +4,9 @@ import controlador.C_Inicio;
 import javafx.concurrent.Task;
 import modelo.otros.Celda;
 import modelo.otros.Objeto_IU;
-
+import modelo.FuenteAlimento;
 import java.util.ArrayList;
 import java.util.Random;
-
 import static controlador.C_Inicio.*;
 import static controlador.C_Inicio.mi_canvas;
 
@@ -59,7 +58,6 @@ public class NidoFiducial extends Nido{
         ArrayList<Posicion> caminoNido = agente.getCaminoACasa();
         if (caminoNido.size() > 0) {
             boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_alimento_1(), caminoNido.get(0),agente.getPosicionActual());
-
             if (pudoPonerAgente) {
                 agente.setPosicionActual(caminoNido.get(0));
                 agente.removeCeldaCaminoCasa(0); // remover de caminoNido la ubicacion utilizada
@@ -79,7 +77,12 @@ public class NidoFiducial extends Nido{
             Posicion p = celdasAlimento.get(randomInt);
             int fila = p.getFila();
             int col = p.getColumna();
-            FuenteAlimento fa = (FuenteAlimento) C_Inicio.matriz.get(fila, col); // obtengo el recurso
+            FuenteAlimento fa = null; // obtengo el recurso
+            try {
+                fa = (FuenteAlimento) C_Inicio.matriz.get(fila, col);
+            }catch(Exception e){
+                System.out.println(e);
+            }
             agente.setCantidad_alimento_encontrado(fa.consumirAlimento(agente.getCantidad_alimento_recoger()));
             agente.setBuscandoComida(false);
             System.out.println("Set as false");
