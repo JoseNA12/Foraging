@@ -1,5 +1,6 @@
 package modelo;
 
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import modelo.otros.Celda;
 import modelo.otros.Objeto_IU;
@@ -68,10 +69,14 @@ public class Matriz_grafo {
 
             if (!isNido(p2.getFila(), p2.getColumna())) { // evitar conflictos al inicio del spam
                 get(p2.getFila(), p2.getColumna()).setTipo_objeto(Objeto_IU.VACIO);
-                mi_canvas.dibujar_canvas(null, p2.getFila(), p2.getColumna());
+                limpirCelda(p2);
             }
             return true;
         }
         return false;
+    }
+
+    public synchronized void limpirCelda(Posicion posicion) {
+        mi_canvas.dibujar_canvas(null, posicion.getFila(), posicion.getColumna());
     }
 }

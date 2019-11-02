@@ -1,8 +1,10 @@
 package modelo;
 
+import controlador.C_Inicio;
 import modelo.otros.Celda;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Nido extends Celda {
@@ -12,6 +14,7 @@ public class Nido extends Celda {
     private int capacidad_minima_alimento;
     private int duracion_alimento;
     private ArrayList<Agente> agentes;
+    private ArrayList<Agente> agentesDormidos;
 
     private int alimentoRecolectado;
 
@@ -35,6 +38,7 @@ public class Nido extends Celda {
         this.duracion_alimento = duracion_alimento * 1000;
         this.cantidad_agentes = cantidad_agentes;
         this.agentes = new ArrayList<>();
+        this.agentesDormidos = new ArrayList<>();
 
         this.alimentoRecolectado = 0;
 
@@ -48,8 +52,9 @@ public class Nido extends Celda {
         this.agentes.add(pAgente);
     }
 
-    public void removeAgente(Agente pAgente) {
-        this.agentes.remove(pAgente);
+    public void eliminarAgenteNido(Agente agente) {
+        this.agentes.remove(agente);
+        C_Inicio.matriz.limpirCelda(agente.getPosicionActual());
     }
 
     public int getCantidadAgentes() {
@@ -97,7 +102,9 @@ public class Nido extends Celda {
     }
 
     public void consumirAlimentoRecolectado() {
-        this.alimentoRecolectado -= 1;
+        if (this.alimentoRecolectado != 0) {
+            this.alimentoRecolectado -= 1;
+        }
     }
 
     public int getDuracion_alimento() {
@@ -146,5 +153,18 @@ public class Nido extends Celda {
 
     public void setReproduccionAgentes(boolean reproduccionAgentes) {
         this.reproduccionAgentes = reproduccionAgentes;
+    }
+
+    public void dormirAgente(Agente agente) {
+        this.agentesDormidos.add(agente);
+        this.agentes.remove(agente);
+        C_Inicio.matriz.limpirCelda(agente.getPosicionActual());
+    }
+
+    public void despertarAgente() {
+        for (int i = 0; i < agentesDormidos.size(); i++) {
+            this.agentes.add(agentesDormidos.get(i));
+            this.agentesDormidos.remove(agentesDormidos.get(i));
+        }
     }
 }

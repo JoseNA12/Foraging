@@ -85,8 +85,12 @@ public class NidoHormigas extends Nido {
                 handlerFeromonas(); // se encarga de actualizar las feromonas de las matriz
 
                 while (juego_activo) {
-                    for (Agente h: getAgentes()) {
-                        Hormiga h_ = (Hormiga) h;
+                    if (getAlimentoRecolectado() < getCapacidad_minima_alimento()) {
+                        despertarAgente();
+                    }
+
+                    for (int i = 0; i < getAgentes().size(); i++) {
+                        Hormiga h_ = (Hormiga) getAgentes().get(i);
 
                         if (h_.isBuscandoComida()) {
                             buscarComida(h_);
@@ -96,9 +100,9 @@ public class NidoHormigas extends Nido {
                         }
 
                         if (isTienenVida()) {
-                            h.restarVida(1);
-                            if (h.getVida() < 0) {
-                                removeAgente(h);
+                            h_.restarVida(1);
+                            if (h_.getVida() < 0) {
+                                eliminarAgenteNido(h_);
                             }
                         }
                     }
@@ -106,7 +110,7 @@ public class NidoHormigas extends Nido {
                         reproducirHormigas();
                     }
 
-                    long diferencia = System.currentTimeMillis() - inicio;
+                    long diferencia = System.currentTimeMillis() - inicio; System.out.println("Tiempo transcurrido: " + diferencia);
                     if (consumirAlimentoNido(diferencia)) {
                         inicio = System.currentTimeMillis();
                     }
@@ -188,6 +192,10 @@ public class NidoHormigas extends Nido {
             h.setCantidad_alimento_encontrado(0);
             h.setBuscandoComida(true);
             h.recordarPosicion(h.getPosicionActual());
+
+            if (getAlimentoRecolectado() > getCapacidad_minima_alimento()) {
+                dormirAgente(h);
+            }
         }
     }
 

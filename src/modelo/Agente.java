@@ -7,6 +7,8 @@ public class Agente {
     private boolean tieneVida;
     private int vida;
 
+    private boolean buscandoComida = true;
+
     private int cantidad_alimento_encontrado = 0;
 
     private Posicion posicionNido;
@@ -80,5 +82,13 @@ public class Agente {
 
     public void setCantidad_alimento_encontrado(int cantidad_alimento_encontrado) {
         this.cantidad_alimento_encontrado = cantidad_alimento_encontrado;
+    }
+
+    public boolean isBuscandoComida() {
+        return buscandoComida;
+    }
+
+    public void setBuscandoComida(boolean buscandoComida) {
+        this.buscandoComida = buscandoComida;
     }
 }
