@@ -1,0 +1,52 @@
+******************************************************************************************************
+*************************************** Bitacora de ejecución ****************************************
+******************************************************************************************************
+- Fecha: 2019/11/02 01:46:01
+
+---------- Parámetros de configuración ----------
+
+Tamaño del mapa: (10 x 10)
+
+Agentes: 
+ - Cantidad por enjambre/nido: 5
+ - Cantidad de alimento a recoger x agente: 3
+ - ¿Los agentes pueden morir?: false
+ - Vida: 120
+ - ¿Reproducción de agentes?: false
+
+Nidos: 
+ - Capacidad máxima de alimento en nido: 20
+ - Capacidad mínima de alimento en nido: 5
+ - Duración de alimentos en nido: 15 segundo(s)
+
+Fuentes de Alimento: 
+ - Cantidad disponible por ubicación: 20
+ - Tiempo en regenerar: 30 segundo(s)
+
+---------- Datos de ejecución ----------
+
+18_Nido_
+ - ID: 18_Nido__Hormiga_Agente_2
+      Tiempo de busqueda: 123.252 segundo(s)
+      Distancia recorrida: 23
+      Alimento transportado: 3
+ - ID: 18_Nido__Hormiga_Agente_3
+      Tiempo de busqueda: 122.552 segundo(s)
+      Distancia recorrida: 25
+      Alimento transportado: 3
+ - ID: 18_Nido__Hormiga_Agente_1
+      Tiempo de busqueda: 121.152 segundo(s)
+      Distancia recorrida: 29
+      Alimento transportado: 3
+ - ID: 18_Nido__Hormiga_Agente_4
+      Tiempo de busqueda: 121.15 segundo(s)
+      Distancia recorrida: 30
+      Alimento transportado: 3
+ - ID: 18_Nido__Hormiga_Agente_0
+      Tiempo de busqueda: 111.341 segundo(s)
+      Distancia recorrida: 47
+      Alimento transportado: 6
+
+
+
+

@@ -68,7 +68,6 @@ public class Matriz_grafo {
             mi_canvas.dibujar_canvas(img, p1.getFila(), p1.getColumna());
 
             if (!isNido(p2.getFila(), p2.getColumna())) { // evitar conflictos al inicio del spam
-                get(p2.getFila(), p2.getColumna()).setTipo_objeto(Objeto_IU.VACIO);
                 limpirCelda(p2);
             }
             return true;
@@ -77,6 +76,7 @@ public class Matriz_grafo {
     }
 
     public synchronized void limpirCelda(Posicion posicion) {
+        get(posicion.getFila(), posicion.getColumna()).setTipo_objeto(Objeto_IU.VACIO);
         mi_canvas.dibujar_canvas(null, posicion.getFila(), posicion.getColumna());
     }
 }
