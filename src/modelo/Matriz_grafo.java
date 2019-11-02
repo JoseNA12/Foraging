@@ -32,8 +32,7 @@ public class Matriz_grafo {
     }
 
     public Celda get(int fila, int columna) {
-        Celda c = this.matriz.get(fila).get(columna);
-        return c;
+        return this.matriz.get(fila).get(columna);
     }
 
     public void set(int fila, int columna, Celda pCelda) {

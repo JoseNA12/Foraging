@@ -79,12 +79,15 @@ public class NidoFiducial extends Nido{
             int fila = p.getFila();
             int col = p.getColumna();
             FuenteAlimento fa = null; // obtengo el recurso
+            System.out.println("1");
             try {
                 fa = (FuenteAlimento) C_Inicio.matriz.get(fila, col);
             }catch(Exception e){
                 System.out.println(e);
             }
+            System.out.println("2");
             agente.setCantidad_alimento_encontrado(fa.consumirAlimento(agente.getCantidad_alimento_recoger()));
+            System.out.println("3");
             agente.setBuscandoComida(false);
             System.out.println("Set as false");
         }

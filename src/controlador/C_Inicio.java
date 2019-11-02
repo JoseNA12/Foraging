@@ -1,5 +1,6 @@
 package controlador;
 
+import controlador.optimizacion.BreadthFirstSearch;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -335,7 +336,6 @@ public class C_Inicio {
         estadoBotones_iniciar_simulacion(true);
 
         Image image = null;
-        int fila = 0, col = 0;
 
         for (int i = 0; i < cant_filas; i++) {
             for (int j = 0; j < cant_columnas; j++) {
@@ -351,9 +351,6 @@ public class C_Inicio {
                         image = mi_canvas.getImg_nido();
                         Nido nido = crearEnjambre(enjambresUsados, pCelda, i + j);
                         matriz.set(i, j, nido);
-                        mi_canvas.dibujar_canvas(image, i, j);
-                        fila = i++;
-                        col = j++;
                         break;
 
                     case ALIMENTO:
@@ -375,8 +372,6 @@ public class C_Inicio {
                 // dibujar los objetos que el usuario seleccionó
             }
         }
-        image = mi_canvas.getImg_agente();
-        mi_canvas.dibujar_canvas(image, fila, col);
         registrarEnBitacoraParametros();
     }
 
@@ -395,7 +390,6 @@ public class C_Inicio {
 
     // retornar un nido a crear acorde a los algoritmos implementados
     private Nido crearEnjambre(List<TipoEnjambre> enjambresUsados, Celda pCelda, int ID) {
-        System.out.println("Llegue a crear enjambre");
         TipoEnjambre enjambre_enum;
         List<TipoEnjambre> enjambresDisponibles = new ArrayList(Arrays.asList(TipoEnjambre.class.getEnumConstants()));
 
@@ -412,10 +406,8 @@ public class C_Inicio {
             enjambre_enum = enjambresUsados.get(0);
         }
         Nido nido = null;
-        enjambre_enum = TipoEnjambre.HORMIGA;
         switch (enjambre_enum) {
             case HORMIGA:
-                System.out.println("Hormiga");
                 nido = new NidoHormigas(
                         pCelda, ID,
                         Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
@@ -429,7 +421,6 @@ public class C_Inicio {
                 );
                 break;
             case FIDUCIAL:
-                System.out.println("Fiducial");
                 nido = new NidoFiducial( // <<<<<--------------- CAMBIAR
                         pCelda, ID,
                         Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
