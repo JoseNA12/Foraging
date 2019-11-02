@@ -10,7 +10,6 @@ import java.util.*;
 
 public class Hormiga extends Agente {
 
-    private boolean buscandoComida = true;
     private ArrayList<Posicion> caminoACasa;
     private Posicion cobertura; // se utiliza para realizar un mapeo de la ruta del mapa al momento de regresar al nido
     private double feromonasPercibidas = 0;
@@ -52,10 +51,6 @@ public class Hormiga extends Agente {
         return pasosRealizados.contains(posicion.getFila() + "," + posicion.getColumna());
     }
 
-    public boolean isBuscandoComida() {
-        return buscandoComida;
-    }
-
     /**
      * Cambia el estado de la hormiga. True -> busca comida, False -> Ir al nido.
      * En caso de que el estado indique ir al nido, por medio de un algoritmo de optimización
@@ -63,9 +58,9 @@ public class Hormiga extends Agente {
      * @param buscandoComida
      */
     public void setBuscandoComida(boolean buscandoComida) {
-        this.buscandoComida = buscandoComida;
+        super.setBuscandoComida(buscandoComida);
 
-        if (this.buscandoComida) {
+        if (buscandoComida) {
             this.cobertura = super.getPosicionNido();
             this.caminoACasa = new ArrayList<>();
             this.feromonasPercibidas = 0;

@@ -12,10 +12,17 @@ public class Agente {
     private int cantidad_alimento_recoger;
     private boolean tieneVida;
     private int vida;
-    private Posicion posicionActual;
-    private Posicion posicionNido;
-    private int cantidad_alimento_encontrado = 0;
     private boolean buscandoComida = true;
+    private int cantidad_alimento_encontrado = 0;
+
+    // Bitacora
+    private int BITACORA_distancia_total_recorrida = 0;
+    private int BITACORA_cantidad_alimento_transportado = 0;
+    private long BITACORA_tiempo_de_busqueda = 0;
+    // -------------
+
+    private Posicion posicionNido;
+    private Posicion posicionActual;
     private ArrayList<Posicion> caminoACasa;
     private Set<String> pasosRealizados;
     private Posicion cobertura; // se utiliza para realizar un mapeo de la ruta del mapa al momento de regresar al nido
@@ -118,10 +125,6 @@ public class Agente {
         return pasosRealizados.contains(posicion.getFila() + "," + posicion.getColumna());
     }
 
-    public boolean isBuscandoComida() {
-        return buscandoComida;
-    }
-
     /**
      * Cambia el estado de la hormiga. True -> busca comida, False -> Ir al nido.
      * En caso de que el estado indique ir al nido, por medio de un algoritmo de optimización
@@ -160,4 +163,34 @@ public class Agente {
         this.caminoACasa = caminoACasa;
     }
 
+    public boolean isBuscandoComida() {
+        return buscandoComida;
+    }
+
+    // Bitacora
+    public void addBITACORA_distancia_total_recorrida(int i) {
+        this.BITACORA_distancia_total_recorrida += i;
+    }
+
+    public void addBITACORA_cantidad_alimento_transportado(int i) {
+        this.BITACORA_cantidad_alimento_transportado += i;
+    }
+
+    public void addBITACORA_tiempo_de_busqueda(long i) {
+        this.BITACORA_tiempo_de_busqueda = i - this.BITACORA_tiempo_de_busqueda;
+    }
+
+    public int getBITACORA_distancia_total_recorrida() {
+        return BITACORA_distancia_total_recorrida;
+    }
+
+    public int getBITACORA_cantidad_alimento_transportado() {
+        return BITACORA_cantidad_alimento_transportado;
+    }
+
+    public long getBITACORA_tiempo_de_busqueda() {
+        return BITACORA_tiempo_de_busqueda;
+    }
+
+    // -------------
 }

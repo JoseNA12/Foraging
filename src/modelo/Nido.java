@@ -1,8 +1,11 @@
 package modelo;
 
+import controlador.C_Inicio;
+import controlador.TxtWriter;
 import modelo.otros.Celda;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Nido extends Celda {
@@ -12,6 +15,7 @@ public class Nido extends Celda {
     private int capacidad_minima_alimento;
     private int duracion_alimento;
     private ArrayList<Agente> agentes;
+    private ArrayList<Agente> agentesDormidos;
 
     private int alimentoRecolectado;
 
@@ -35,6 +39,7 @@ public class Nido extends Celda {
         this.duracion_alimento = duracion_alimento * 1000;
         this.cantidad_agentes = cantidad_agentes;
         this.agentes = new ArrayList<>();
+        this.agentesDormidos = new ArrayList<>();
 
         this.alimentoRecolectado = 0;
 
@@ -48,8 +53,9 @@ public class Nido extends Celda {
         this.agentes.add(pAgente);
     }
 
-    public void removeAgente(Agente pAgente) {
-        this.agentes.remove(pAgente);
+    public void eliminarAgenteNido(Agente agente) {
+        this.agentes.remove(agente);
+        C_Inicio.matriz.limpirCelda(agente.getPosicionActual());
     }
 
     public int getCantidadAgentes() {
@@ -97,7 +103,9 @@ public class Nido extends Celda {
     }
 
     public void consumirAlimentoRecolectado() {
-        this.alimentoRecolectado -= 1;
+        if (this.alimentoRecolectado != 0) {
+            this.alimentoRecolectado -= 1;
+        }
     }
 
     public int getDuracion_alimento() {
@@ -148,11 +156,40 @@ public class Nido extends Celda {
         this.reproduccionAgentes = reproduccionAgentes;
     }
 
-   /* public  void getAgenteEnPosicion(Posicion posicion){
-        for (Agente agente:agentes) {
-            int filaAgente = agente.getPosicion().getFila();
-            int colAgente = agente.getPosicion().getColumna()
-            if (posicion.getFila() ==  && )
+    public ArrayList<Agente> getAgentesDormidos() {
+        return agentesDormidos;
+    }
+
+    public void setAgentesDormidos(ArrayList<Agente> agentesDormidos) {
+        this.agentesDormidos = agentesDormidos;
+    }
+
+    public void dormirAgente(Agente agente) {
+        this.agentesDormidos.add(agente);
+        this.agentes.remove(agente);
+        C_Inicio.matriz.limpirCelda(agente.getPosicionActual());
+    }
+
+    public void despertarAgente() {
+        for (int i = 0; i < agentesDormidos.size(); i++) {
+            this.agentes.add(agentesDormidos.get(i));
+            this.agentesDormidos.remove(agentesDormidos.get(i));
         }
-    }*/
+    }
+
+    public synchronized void escribirEnBitacora() {
+        String contenido = getID() + "\n";
+        ArrayList<Agente> p = new ArrayList<>();
+        p.addAll(getAgentes()); p.addAll(getAgentesDormidos());
+
+        long tiempo_buscando_fin = System.currentTimeMillis();
+
+        for (int i = 0; i < p.size(); i++) {
+            contenido += " - ID: " + p.get(i).getID() + "\n" +
+                 "      Tiempo de busqueda: " + ((tiempo_buscando_fin - p.get(i).getBITACORA_tiempo_de_busqueda()) / 1000F) + " segundo(s)\n" +
+                 "      Distancia recorrida: " + p.get(i).getBITACORA_distancia_total_recorrida() + "\n" +
+                 "      Alimento transportado: " + p.get(i).getBITACORA_cantidad_alimento_transportado() + "\n";
+        }
+        TxtWriter.registrarBitacora(contenido);
+    }
 }

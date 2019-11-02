@@ -85,20 +85,36 @@ public class NidoHormigas extends Nido {
                 handlerFeromonas(); // se encarga de actualizar las feromonas de las matriz
 
                 while (juego_activo) {
-                    for (Agente h: getAgentes()) {
-                        Hormiga h_ = (Hormiga) h;
+                    if (getAlimentoRecolectado() < getCapacidad_minima_alimento()) {
+                        despertarAgente();
+                    }
+
+                    for (int i = 0; i < getAgentes().size(); i++) {
+                        Hormiga h_ = (Hormiga) getAgentes().get(i);
 
                         if (h_.isBuscandoComida()) {
+                            // bitacora
+                            long tiempo_buscando_inicio = System.currentTimeMillis();
+                            // --------------
+
                             buscarComida(h_);
+
+                            // bitacora
+                            h_.addBITACORA_tiempo_de_busqueda(tiempo_buscando_inicio);
+                            // --------------
                         }
                         else {
                             irANido(h_);
                         }
 
+                        // bitacora
+                        h_.addBITACORA_distancia_total_recorrida(1);
+                        // --------------
+
                         if (isTienenVida()) {
-                            h.restarVida(1);
-                            if (h.getVida() < 0) {
-                                removeAgente(h);
+                            h_.restarVida(1);
+                            if (h_.getVida() < 0) {
+                                eliminarAgenteNido(h_);
                             }
                         }
                     }
@@ -113,6 +129,7 @@ public class NidoHormigas extends Nido {
 
                     Thread.sleep((long) lapsos_tiempo_ejecucion);
                 }
+                escribirEnBitacora();
                 return null;
             }
         };
@@ -124,11 +141,11 @@ public class NidoHormigas extends Nido {
      * Se inspeccionan las celdas cercanas y se determina si es una fuente de alimento,
      * .. si lo es, se consume el recurso y se establece la bandera en 'setBuscandoComida' indicando
      * .. que es necesario ir al nido.
-     * En caso de no haber fuentes disponibles, se calculas las celdas disponibles alrededor de la
+     * En caso de no haber fuentes disponibles, se calculan las celdas disponibles alrededor de la
      * .. hormiga, con prioridad de las celdas no visitadas y tambien la cantidad de feromonas.
      * Por último, si una hormiga percibe un rastro de feromonas, esta la almacena para realizar
-     * .. el debido calcula al momento de devolverse con la comida, esto indica que el camino puede
-     * .. ser muuy factible.
+     * .. el debido calculo al momento de devolverse con la comida, esto indica que el camino puede
+     * .. ser muy factible de recorrer.
      * @param h
      */
     private void buscarComida(Hormiga h) {
@@ -142,6 +159,9 @@ public class NidoHormigas extends Nido {
             FuenteAlimento fa = ((FuenteAlimento) C_Inicio.matriz.get(p.getFila(), p.getColumna())); // obtengo el recurso
             h.setCantidad_alimento_encontrado(fa.consumirAlimento(h.getCantidad_alimento_recoger()));
             h.setBuscandoComida(false);
+
+            // bitacora
+            h.addBITACORA_cantidad_alimento_transportado(h.getCantidad_alimento_encontrado());
         }
         else {
             ArrayList<Posicion> celdasDisponibles = celdasVecinasDisponibles(h);
@@ -188,6 +208,10 @@ public class NidoHormigas extends Nido {
             h.setCantidad_alimento_encontrado(0);
             h.setBuscandoComida(true);
             h.recordarPosicion(h.getPosicionActual());
+
+            if (getAlimentoRecolectado() > getCapacidad_minima_alimento()) {
+                dormirAgente(h);
+            }
         }
     }
 
@@ -353,6 +377,4 @@ public class NidoHormigas extends Nido {
         }
         return false;
     }
-
-
 }
