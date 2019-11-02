@@ -8,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,10 +17,7 @@ import javafx.scene.text.Text;
 import javafx.util.converter.IntegerStringConverter;
 import modelo.*;
 import modelo.AlgoritmoHormiga.NidoHormigas;
-import modelo.otros.Celda;
-import modelo.otros.Objeto_IU;
-import modelo.otros.Path_Imagenes;
-import modelo.otros.TipoEnjambre;
+import modelo.otros.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +105,7 @@ public class C_Inicio {
 
         // validaciones para que los inputs solo acepten valores numericos
         id_text_cantidad_agentes_x_nido.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
-                10, integerFilter));
+                5, integerFilter));
         id_text_cantidad_alimento_recoger.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 3, integerFilter));
         id_text_vida_agentes.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
@@ -124,7 +120,7 @@ public class C_Inicio {
                 20, integerFilter));
         id_text_tiempo_en_regenerar_alimento.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
                 30, integerFilter));
-        id_text_lapsos_tiempo_duracion.setText("1.0");
+        id_text_lapsos_tiempo_duracion.setText("0.7");
 
         id_check_agentes_morir.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -132,6 +128,11 @@ public class C_Inicio {
                 id_text_vida_agentes.setDisable(!newValue);
             }
         });
+
+        id_cant_filas.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
+                20, integerFilter));
+        id_cant_columnas.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),
+                20, integerFilter));
 
         mi_canvas = new CanvasJuego(id_canvas_juego);
     }
@@ -171,10 +172,10 @@ public class C_Inicio {
             setTamaniosBotones((int) Math.abs(id_pane_matriz.getWidth() / cant_columnas), (int) Math.abs(id_pane_matriz.getHeight() / cant_filas));
 
             // crear el grid con botones
-            for (int y = 0; y < cant_filas; y++) {
+            for (int i = 0; i < cant_filas; i++) {
                 ArrayList<Celda> pLista = new ArrayList<>();
 
-                for (int x = 0; x < cant_columnas; x++) {
+                for (int j = 0; j < cant_columnas; j++) {
                     Button btn = new Button();
                     btn.setMaxSize(width_btn_matriz, height_btn_matriz);
                     btn.setMinSize(width_btn_matriz, height_btn_matriz);
@@ -182,15 +183,15 @@ public class C_Inicio {
                     btn.setOnAction(btn_matriz_handler);
 
                     // almacenar en el boton su respectiva coordenada
-                    Celda c = new Celda(y, x, Objeto_IU.VACIO);
+                    Celda c = new Celda(i, j, Objeto_IU.VACIO);
                     btn.setUserData(c);
                     btn.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(Path_Imagenes.BLOQUE.getContenido()), width_btn_matriz, height_btn_matriz, false, false)));
 
                     pLista.add(c);
 
                     // poner en el grid pane el boton
-                    id_gridPane.setRowIndex(btn, y);
-                    id_gridPane.setColumnIndex(btn, x);
+                    id_gridPane.setRowIndex(btn, i);
+                    id_gridPane.setColumnIndex(btn, j);
                     id_gridPane.getChildren().add(btn);
                 }
                 matriz.add(pLista);
@@ -297,7 +298,6 @@ public class C_Inicio {
                     case OBSTACULO:
                         image = mi_canvas.getImg_obstaculo();
                         matriz.set(i, j, new Obstaculo(pCelda));
-                        mi_canvas.dibujar_canvas(image, i, j);
                         break;
 
                     case NIDO:
@@ -317,7 +317,6 @@ public class C_Inicio {
                                 Integer.parseInt(id_text_tiempo_en_regenerar_alimento.getText())
                         );
                         matriz.set(i, j, fa);
-                        mi_canvas.dibujar_canvas(image, i, j);
                         break;
 
                     default:
@@ -325,7 +324,8 @@ public class C_Inicio {
                         image = null;
                         break;
                 }
-                 // dibujar los objetos que el usuario seleccionó
+                mi_canvas.dibujar_canvas(image, i, j);
+                // dibujar los objetos que el usuario seleccionó
             }
         }
         image = mi_canvas.getImg_agente();
@@ -375,7 +375,7 @@ public class C_Inicio {
                 break;
             case FIDUCIAL:
                 System.out.println("Fiducial");
-                nido = new Nido( // <<<<<--------------- CAMBIAR
+                nido = new NidoFiducial( // <<<<<--------------- CAMBIAR
                         pCelda, ID,
                         Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
                         Integer.parseInt(id_text_cantidad_alimento_min_x_nido.getText()),
@@ -386,9 +386,6 @@ public class C_Inicio {
                         Integer.parseInt(id_text_vida_agentes.getText()),
                         id_check_agentes_reproduccion.isSelected()
                 );
-                System.out.println("Paso 2");
-                BusquedaFiducial fiducial = new BusquedaFiducial(nido);
-                //fiducial.iniciar();
                 break;
             default:
                 break;

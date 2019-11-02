@@ -141,8 +141,8 @@
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="x" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cant. filas" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cant. columnas" GridPane.columnIndex="2" />
-                              <TextField fx:id="id_cant_filas" promptText="max. 38" text="30" GridPane.rowIndex="1" />
-                              <TextField fx:id="id_cant_columnas" promptText="max. 52" text="30" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <TextField fx:id="id_cant_filas" promptText="max. 38" GridPane.rowIndex="1" />
+                              <TextField fx:id="id_cant_columnas" promptText="max. 52" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                         <Separator layoutX="30.0" layoutY="96.0" prefHeight="5.0" prefWidth="297.0" />
@@ -166,7 +166,7 @@
       </TabPane>
       <Pane fx:id="id_pane_matriz" layoutX="14.0" layoutY="14.0" prefHeight="684.0" prefWidth="936.0">
          <children>
-            <Canvas fx:id="id_canvas_juego" height="684.0" style="-fx-background-color: white;" width="936.0" />
+            <Canvas fx:id="id_canvas_juego" height="684.0" width="936.0" />
             <GridPane fx:id="id_gridPane" alignment="CENTER" gridLinesVisible="true" maxHeight="684.0" maxWidth="936.0">
               <columnConstraints>
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />

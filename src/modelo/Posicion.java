@@ -28,11 +28,11 @@ public class Posicion {
         this.columna = columna;
     }
 
-    @Override
+    public boolean mismasPosiciones(Posicion p) {
+        return (this.fila == p.getFila() && this.columna == p.getColumna());
+    }
+
     public String toString() {
-        return "Posicion{" +
-                "fila=" + fila +
-                ", columna=" + columna +
-                '}';
+        return "(" + this.fila + ", " + this.columna + ")";
     }
 }
