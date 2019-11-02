@@ -1,6 +1,7 @@
 package modelo;
 
 import controlador.C_Inicio;
+import controlador.TxtWriter;
 import modelo.otros.Celda;
 
 import java.util.ArrayList;
@@ -155,6 +156,14 @@ public class Nido extends Celda {
         this.reproduccionAgentes = reproduccionAgentes;
     }
 
+    public ArrayList<Agente> getAgentesDormidos() {
+        return agentesDormidos;
+    }
+
+    public void setAgentesDormidos(ArrayList<Agente> agentesDormidos) {
+        this.agentesDormidos = agentesDormidos;
+    }
+
     public void dormirAgente(Agente agente) {
         this.agentesDormidos.add(agente);
         this.agentes.remove(agente);
@@ -166,5 +175,21 @@ public class Nido extends Celda {
             this.agentes.add(agentesDormidos.get(i));
             this.agentesDormidos.remove(agentesDormidos.get(i));
         }
+    }
+
+    public synchronized void escribirEnBitacora() {
+        String contenido = getID() + "\n";
+        ArrayList<Agente> p = new ArrayList<>();
+        p.addAll(getAgentes()); p.addAll(getAgentesDormidos());
+
+        long tiempo_buscando_fin = System.currentTimeMillis();
+
+        for (int i = 0; i < p.size(); i++) {
+            contenido += " - ID: " + p.get(i).getID() + "\n" +
+                 "      Tiempo de busqueda: " + ((tiempo_buscando_fin - p.get(i).getBITACORA_tiempo_de_busqueda()) / 1000F) + " segundo(s)\n" +
+                 "      Distancia recorrida: " + p.get(i).getBITACORA_distancia_total_recorrida() + "\n" +
+                 "      Alimento transportado: " + p.get(i).getBITACORA_cantidad_alimento_transportado() + "\n";
+        }
+        TxtWriter.registrarBitacora(contenido);
     }
 }

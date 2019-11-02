@@ -20,6 +20,9 @@ import modelo.*;
 import modelo.AlgoritmoHormiga.NidoHormigas;
 import modelo.otros.*;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -100,6 +103,8 @@ public class C_Inicio {
 
     public void initialize() throws Exception {
         init_componentes();
+
+        TxtWriter.init();
     }
 
     private void init_componentes() {
@@ -146,6 +151,48 @@ public class C_Inicio {
         }
         return null;
     };
+
+    private void registrarEnBitacoraParametros() {
+        // Obtener fecha y hora
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        String encabezado =
+                "******************************************************************************************************\n" +
+                "*************************************** Bitacora de ejecución ****************************************\n" +
+                "******************************************************************************************************\n" +
+                "- Fecha: " + dtf.format(now) + "\n";
+
+        String seccion_1 = "---------- Parámetros de configuración ----------\n";
+
+        String mapa = "Tamaño del mapa: (" + cant_filas + " x " + cant_columnas + ")\n";
+
+        String agente = "Agentes: \n" +
+                " - Cantidad por enjambre/nido: " + id_text_cantidad_agentes_x_nido.getText() + "\n" +
+                " - Cantidad de alimento a recoger x agente: " + id_text_cantidad_alimento_recoger.getText() + "\n" +
+                " - ¿Los agentes pueden morir?: " + id_check_agentes_morir.isSelected() + "\n" +
+                " - Vida: " + id_text_vida_agentes.getText() + "\n" +
+                " - ¿Reproducción de agentes?: " + id_check_agentes_reproduccion.isSelected() + "\n";
+
+        String nido = "Nidos: \n" +
+                " - Capacidad máxima de alimento en nido: " + id_text_cantidad_alimento_max_x_nido.getText() + "\n" +
+                " - Capacidad mínima de alimento en nido: " + id_text_cantidad_alimento_min_x_nido.getText() + "\n" +
+                " - Duración de alimentos en nido: " + id_text_duración_alimento_en_nido.getText() + " segundo(s)\n";
+
+        String fuenteAlimento = "Fuentes de Alimento: \n" +
+                " - Cantidad disponible por ubicación: " + id_text_cantidad_alimento_disponible_x_ubicacion.getText() + "\n" +
+                " - Tiempo en regenerar: " + id_text_tiempo_en_regenerar_alimento.getText() + " segundo(s)\n";
+
+        String seccion_2 = "---------- Datos de ejecución ----------\n";
+
+        TxtWriter.registrarBitacora(encabezado);
+        TxtWriter.registrarBitacora(seccion_1);
+        TxtWriter.registrarBitacora(mapa);
+        TxtWriter.registrarBitacora(agente);
+        TxtWriter.registrarBitacora(nido);
+        TxtWriter.registrarBitacora(fuenteAlimento);
+        TxtWriter.registrarBitacora(seccion_2);
+    }
 
     // establecer el tamaño de los botones e imagenes de la matriz que se generar segun el tamaño
     private void setTamaniosBotones(int pWidth, int pHeight) {
@@ -325,12 +372,20 @@ public class C_Inicio {
                 // dibujar los objetos que el usuario seleccionó
             }
         }
+        registrarEnBitacoraParametros();
     }
 
     @FXML
     void onButtonClick_DetenerSimulacion(ActionEvent event) {
         juego_activo = false;
         estadoBotones_detener_simulacion(true);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        TxtWriter.generarArchivo();
     }
 
     // retornar un nido a crear acorde a los algoritmos implementados

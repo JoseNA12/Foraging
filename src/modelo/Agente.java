@@ -11,6 +11,12 @@ public class Agente {
 
     private int cantidad_alimento_encontrado = 0;
 
+    // Bitacora
+    private int BITACORA_distancia_total_recorrida = 0;
+    private int BITACORA_cantidad_alimento_transportado = 0;
+    private long BITACORA_tiempo_de_busqueda = 0;
+    // -------------
+
     private Posicion posicionNido;
     private Posicion posicionActual;
 
@@ -91,4 +97,32 @@ public class Agente {
     public void setBuscandoComida(boolean buscandoComida) {
         this.buscandoComida = buscandoComida;
     }
+
+    // Bitacora
+    public void addBITACORA_distancia_total_recorrida(int i) {
+        this.BITACORA_distancia_total_recorrida += i;
+    }
+
+    public void addBITACORA_cantidad_alimento_transportado(int i) {
+        this.BITACORA_cantidad_alimento_transportado += i;
+    }
+
+    public void addBITACORA_tiempo_de_busqueda(long i) {
+        this.BITACORA_tiempo_de_busqueda = i - this.BITACORA_tiempo_de_busqueda;
+    }
+
+    public int getBITACORA_distancia_total_recorrida() {
+        return BITACORA_distancia_total_recorrida;
+    }
+
+    public int getBITACORA_cantidad_alimento_transportado() {
+        return BITACORA_cantidad_alimento_transportado;
+    }
+
+    public long getBITACORA_tiempo_de_busqueda() {
+        return BITACORA_tiempo_de_busqueda;
+    }
+
+    // -------------
+
 }

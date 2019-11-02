@@ -93,11 +93,23 @@ public class NidoHormigas extends Nido {
                         Hormiga h_ = (Hormiga) getAgentes().get(i);
 
                         if (h_.isBuscandoComida()) {
+                            // bitacora
+                            long tiempo_buscando_inicio = System.currentTimeMillis();
+                            // --------------
+
                             buscarComida(h_);
+
+                            // bitacora
+                            h_.addBITACORA_tiempo_de_busqueda(tiempo_buscando_inicio);
+                            // --------------
                         }
                         else {
                             irANido(h_);
                         }
+
+                        // bitacora
+                        h_.addBITACORA_distancia_total_recorrida(1);
+                        // --------------
 
                         if (isTienenVida()) {
                             h_.restarVida(1);
@@ -110,13 +122,14 @@ public class NidoHormigas extends Nido {
                         reproducirHormigas();
                     }
 
-                    long diferencia = System.currentTimeMillis() - inicio; System.out.println("Tiempo transcurrido: " + diferencia);
+                    long diferencia = System.currentTimeMillis() - inicio;
                     if (consumirAlimentoNido(diferencia)) {
                         inicio = System.currentTimeMillis();
                     }
 
                     Thread.sleep((long) lapsos_tiempo_ejecucion);
                 }
+                escribirEnBitacora();
                 return null;
             }
         };
@@ -128,11 +141,11 @@ public class NidoHormigas extends Nido {
      * Se inspeccionan las celdas cercanas y se determina si es una fuente de alimento,
      * .. si lo es, se consume el recurso y se establece la bandera en 'setBuscandoComida' indicando
      * .. que es necesario ir al nido.
-     * En caso de no haber fuentes disponibles, se calculas las celdas disponibles alrededor de la
+     * En caso de no haber fuentes disponibles, se calculan las celdas disponibles alrededor de la
      * .. hormiga, con prioridad de las celdas no visitadas y tambien la cantidad de feromonas.
      * Por último, si una hormiga percibe un rastro de feromonas, esta la almacena para realizar
-     * .. el debido calcula al momento de devolverse con la comida, esto indica que el camino puede
-     * .. ser muuy factible.
+     * .. el debido calculo al momento de devolverse con la comida, esto indica que el camino puede
+     * .. ser muy factible de recorrer.
      * @param h
      */
     private void buscarComida(Hormiga h) {
@@ -146,6 +159,9 @@ public class NidoHormigas extends Nido {
             FuenteAlimento fa = ((FuenteAlimento) C_Inicio.matriz.get(p.getFila(), p.getColumna())); // obtengo el recurso
             h.setCantidad_alimento_encontrado(fa.consumirAlimento(h.getCantidad_alimento_recoger()));
             h.setBuscandoComida(false);
+
+            // bitacora
+            h.addBITACORA_cantidad_alimento_transportado(h.getCantidad_alimento_encontrado());
         }
         else {
             ArrayList<Posicion> celdasDisponibles = celdasVecinasDisponibles(h);
@@ -361,6 +377,4 @@ public class NidoHormigas extends Nido {
         }
         return false;
     }
-
-
 }
