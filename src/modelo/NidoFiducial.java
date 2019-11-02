@@ -25,8 +25,8 @@ public class NidoFiducial extends Nido{
         }
     }
 
-    private Agente crearAgente(String id) {
-        return new Agente(getPosicion(), id, getCantidadAlimentoRecoger(), isTienenVida(), getCantidadVida());
+    private AgenteFiducial crearAgente(String id) {
+        return new AgenteFiducial(getPosicion(), id, getCantidadAlimentoRecoger(), isTienenVida(), getCantidadVida());
     }
 
     public void iniciar() {
@@ -35,7 +35,8 @@ public class NidoFiducial extends Nido{
             protected Object call() throws Exception {
                 long inicio = System.currentTimeMillis();
                 while (juego_activo) {
-                    for (Agente agente: getAgentes()){
+                    for (int i = 0; i < getAgentes().size(); i++) {
+                        AgenteFiducial agente = (AgenteFiducial) getAgentes().get(i);
                         if (agente.isBuscandoComida()) {
                             moverAgente(agente);
                         }
@@ -53,7 +54,7 @@ public class NidoFiducial extends Nido{
         new Thread(task).start();
     }
 
-    private void irANido(Agente agente){
+    private void irANido(AgenteFiducial agente){
         System.out.println("Nido");
         ArrayList<Posicion> caminoNido = agente.getCaminoACasa();
         if (caminoNido.size() > 0) {
@@ -65,7 +66,7 @@ public class NidoFiducial extends Nido{
         }
     }
 
-    private void moverAgente(Agente agente){
+    private void moverAgente(AgenteFiducial agente){
         Posicion pos = agente.getPosicionActual();
         Object[] returnArrayList = celdasVecinasDisponibles(pos.getFila(), pos.getColumna());
         ArrayList<Posicion> celdasDisponibles = (ArrayList<Posicion>) returnArrayList[0];
