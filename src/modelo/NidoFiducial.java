@@ -89,7 +89,7 @@ public class NidoFiducial extends Nido{
     private void irANido(AgenteFiducial agente){
         ArrayList<Posicion> caminoNido = agente.getCaminoACasa();
         if (caminoNido.size() > 0) {
-            boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_alimento_1(), caminoNido.get(0),agente.getPosicionActual());
+            boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_alimento_2(), caminoNido.get(0),agente.getPosicionActual());
             if (pudoPonerAgente) {
                 agente.setPosicionActual(caminoNido.get(0));
                 agente.removeCeldaCaminoCasa(0); // remover de caminoNido la ubicacion utilizada
@@ -127,7 +127,7 @@ public class NidoFiducial extends Nido{
         else{
             Posicion p = caminoMasEfectivo(celdasDisponibles, celdasAgentesVecinos, agente);
             if (p != null) {
-                boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente(), p, agente.getPosicionActual());
+                boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_2(), p, agente.getPosicionActual());
                 if (pudoPonerAgente) {
                     agente.setPosicionActual(p);
                     agente.recordarPosicion(p);
@@ -150,11 +150,11 @@ public class NidoFiducial extends Nido{
                         celdasDisponibles.add(new Posicion(x, y));
                     }
                     else if(C_Inicio.matriz.get(x, y).getTipo_objeto() == Objeto_IU.AGENTE) {
-                        System.out.println("Agregando agente a la lista de vecinos");
+                        //System.out.println("Agregando agente a la lista de vecinos");
                         celdasAgentes.add(new Posicion(x, y));
                     }
                     else if(C_Inicio.matriz.get(x, y).getTipo_objeto() == Objeto_IU.ALIMENTO) {
-                        System.out.println("Agregando alimento a la lista de alimentos");
+                       //System.out.println("Agregando alimento a la lista de alimentos");
                         celdasAlimento.add(new Posicion(x, y));
                     }
                 }

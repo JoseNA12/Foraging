@@ -195,14 +195,7 @@ public class NidoHormigas extends Nido {
 
         ArrayList<Posicion> caminoNido = h.getCaminoACasa();
 
-        System.out.print("caminoNido: ");
-        for (int i = 0; i < caminoNido.size(); i++) {
-            System.out.print("(" + caminoNido.get(i).getFila() + ", " + caminoNido.get(i).getColumna() + ")");
-        }
-        System.out.println("\nposActual: (" + h.getPosicionActual().getFila() + ", " + h.getPosicionActual().getColumna() + ")");
-
-
-        if (caminoNido.size() > 0) { System.out.println("    Objecto_IU: " + C_Inicio.matriz.get(caminoNido.get(0).getFila(), caminoNido.get(0).getColumna()).getTipo_objeto());
+        if (caminoNido.size() > 0) {
             boolean pudoPonerAgente = C_Inicio.matriz.setAgenteCasilla(mi_canvas.getImg_agente_alimento_1(), caminoNido.get(0), h.getPosicionActual());
 
             if (pudoPonerAgente) {
