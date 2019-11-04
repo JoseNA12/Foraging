@@ -406,7 +406,7 @@ public class C_Inicio {
             enjambre_enum = enjambresUsados.get(0);
         }
         Nido nido = null;
-        enjambre_enum = TipoEnjambre.FIDUCIAL;
+
         switch (enjambre_enum) {
             case HORMIGA:
                 nido = new NidoHormigas(
@@ -422,7 +422,7 @@ public class C_Inicio {
                 );
                 break;
             case FIDUCIAL:
-                nido = new NidoFiducial( // <<<<<--------------- CAMBIAR
+                nido = new NidoFiducial(
                         pCelda, ID,
                         Integer.parseInt(id_text_cantidad_alimento_max_x_nido.getText()),
                         Integer.parseInt(id_text_cantidad_alimento_min_x_nido.getText()),

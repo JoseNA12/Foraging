@@ -7,8 +7,10 @@ public enum Path_Imagenes {
     BLOQUE("../vista/imagenes/bloque.png"),
 
     ALIMENTO_NO_DISP("../vista/imagenes/donut_no_disponible.png"),
-    AGENTE("../vista/imagenes/agente.png"),
-    AGENTE_ALIMENTO("../vista/imagenes/agente_alimento.png");
+    AGENTE("../vista/imagenes/hormiga.png"),
+    AGENTE_ALIMENTO("../vista/imagenes/hormiga_alimento.png"),
+    AGENTE_2("../vista/imagenes/robotic.png"),
+    AGENTE_2_ALIMENTO("../vista/imagenes/robotic_alimento.png");
 
     ;
 
