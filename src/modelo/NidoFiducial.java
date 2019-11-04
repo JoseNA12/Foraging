@@ -152,7 +152,7 @@ public class NidoFiducial extends Nido{
                         celdasAgentes.add(new Posicion(x, y));
                     }
                     else if(C_Inicio.matriz.get(x, y).getTipo_objeto() == Objeto_IU.ALIMENTO) {
-                        celdasAgentes.add(new Posicion(x, y));
+                        celdasAlimento.add(new Posicion(x, y));
                     }
                 }
             }
