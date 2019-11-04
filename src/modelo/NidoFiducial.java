@@ -203,8 +203,8 @@ public class NidoFiducial extends Nido{
     }
 
     private Posicion calcularPosicionContraria(Posicion posAgente, Posicion posAgenteVecino){
-        int filaAgenteContraria = posAgente.getFila() - posAgenteVecino.getFila() + 1;
-        int colAgenteContraria = posAgente.getColumna() - posAgenteVecino.getColumna() + 1;
+        int filaAgenteContraria = posAgente.getFila() - posAgenteVecino.getFila() + posAgente.getFila() ;
+        int colAgenteContraria = posAgente.getColumna() - posAgenteVecino.getColumna() + posAgente.getColumna();
         return new Posicion(filaAgenteContraria, colAgenteContraria);
     }
 
