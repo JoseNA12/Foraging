@@ -2,7 +2,6 @@ package modelo;
 
 import controlador.C_Inicio;
 import javafx.concurrent.Task;
-import javafx.geometry.Pos;
 import modelo.Agente;
 import modelo.FuenteAlimento;
 import modelo.Nido;
@@ -113,7 +112,7 @@ public class NidoFiducial extends Nido{
         ArrayList<Posicion> celdasDisponibles = (ArrayList<Posicion>) returnArrayList[0];
         ArrayList<Posicion> celdasAgentesVecinos = (ArrayList<Posicion>) returnArrayList[1];
         ArrayList<Posicion> celdasAlimento = (ArrayList<Posicion>) returnArrayList[2];
-        if(!celdasAlimento.isEmpty()){
+        if(celdasAlimento.size() > 0){
             Random randomGenerator = new Random();
             int randomInt = randomGenerator.nextInt(celdasAlimento.size()); // si hay varias escoja 1 al azar
             Posicion p = celdasAlimento.get(randomInt);
@@ -150,11 +149,9 @@ public class NidoFiducial extends Nido{
                         celdasDisponibles.add(new Posicion(x, y));
                     }
                     else if(C_Inicio.matriz.get(x, y).getTipo_objeto() == Objeto_IU.AGENTE) {
-                        System.out.println("Agregando agente a la lista de vecinos");
                         celdasAgentes.add(new Posicion(x, y));
                     }
                     else if(C_Inicio.matriz.get(x, y).getTipo_objeto() == Objeto_IU.ALIMENTO) {
-                        System.out.println("Agregando alimento a la lista de alimentos");
                         celdasAlimento.add(new Posicion(x, y));
                     }
                 }
@@ -166,18 +163,42 @@ public class NidoFiducial extends Nido{
     private Posicion caminoMasEfectivo(ArrayList<Posicion> celdasDisponibles, ArrayList<Posicion> celdasAgentes, AgenteFiducial agente) {
         Posicion posNueva, posAgente = agente.getPosicionActual();
         for(Posicion posAgenteVecino : celdasAgentes){
-            posNueva = this.calcularPosicionContraria(posAgente, posAgenteVecino);
-            if (this.comprobarCeldaDisponible(celdasDisponibles, posNueva.getFila(), posNueva.getColumna()))
-                return posNueva;
+                posNueva = this.calcularPosicionContraria(posAgente, posAgenteVecino);
+                if (this.comprobarCeldaDisponible(celdasDisponibles, posNueva.getFila(), posNueva.getColumna()))
+                    return posNueva;
         }
-        posNueva = this.desplazamientoAleatorio(posAgente);
-        return (this.comprobarCeldaDisponible(celdasDisponibles, posNueva.getFila(), posNueva.getColumna()) ) ? posNueva : null;
+        //Posicion
+        return obtenerRandomMovSinRepetir(agente, celdasDisponibles);//(this.comprobarCeldaDisponible(celdasDisponibles, posNueva.getFila(), posNueva.getColumna())) ? posNueva : null;
+    }
+
+    private ArrayList celdasDisponiblesSinRepetir(ArrayList<Posicion> celdasDisponibles, AgenteFiducial agente){
+        ArrayList<Posicion> celdasSinRepetir = new ArrayList<>();
+        for(Posicion pos : celdasDisponibles){
+            if (!esMovimientoRepetido(agente, pos))
+                celdasSinRepetir.add(pos);
+        }
+        return celdasSinRepetir;
+    }
+
+
+    private Posicion obtenerRandomMovSinRepetir(AgenteFiducial agente, ArrayList<Posicion> celdasDisponibles){
+        ArrayList<Posicion> celdasSinRepetir = celdasDisponiblesSinRepetir(celdasDisponibles, agente);
+        Posicion posicionCandidata = desplazamientoAleatorio(agente.getPosicionActual());
+        if (celdasSinRepetir.size() > 0){
+            if (!comprobarCeldaDisponible(celdasSinRepetir, posicionCandidata.getFila(), posicionCandidata.getColumna()))
+                return obtenerRandomMovSinRepetir(agente, celdasDisponibles);
+        }
+        return posicionCandidata;
     }
 
     private Posicion desplazamientoAleatorio(Posicion posAgente){
         Random r = new Random();
         int desplazamientoFila = r.nextInt(2 + 1) - 1;
         int desplazamientoColumna = r.nextInt(2 + 1) - 1;
+        if (posAgente.getFila() == 0 && desplazamientoFila < 0) desplazamientoFila = 1;
+        if (posAgente.getFila() == cant_filas - 1 && desplazamientoFila > 0) desplazamientoFila = -1;
+        if (posAgente.getColumna() == 0 && desplazamientoColumna < 0) desplazamientoColumna = 1;
+        if (posAgente.getColumna() == cant_columnas - 1 && desplazamientoColumna > 0) desplazamientoColumna = -1;
         return new Posicion(posAgente.getFila()+desplazamientoFila, posAgente.getColumna()+desplazamientoColumna);
     }
 
